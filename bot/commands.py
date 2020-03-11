@@ -10,9 +10,9 @@ class Command:
     @classmethod
     def help(cls):
         return '''Lista de comandos:
-    !help: Te muestro este mensaje entero
-    !hello: Te saludo
-    !leet <mensaje>: Mi código venía con esta puta mierda que todavía no he quitado.
+    &help: Te muestro este mensaje entero
+    &hello: Te saludo
+    &leet <mensaje>: Mi código venía con esta puta mierda que todavía no he quitado.
 '''
 
     # Converts user-input to 1337 5p34k.
