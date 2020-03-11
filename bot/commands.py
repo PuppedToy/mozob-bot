@@ -20,6 +20,7 @@ class Command:
     `&leet <mensaje>`: Mi código venía con esta puta mierda que todavía no he quitado.
     `&factory create <Nombre fabrica>&<Nombre producto>`: Construye una nueva fábrica.
     `&factory delete`: Si tienes una fábrica, LA DESTRUYES PARA SIEMPRE.
+    `&factory list`: Muestra la lista de fábricas existentes.
     `&inventory`: Muestra tu inventario
 '''
 
@@ -32,6 +33,15 @@ class Command:
             "product": product
         }
         return "He creado tu fábrica \"{0}\" de {1}s correctamente.".format(name, product)
+
+    @classmethod
+    def listFactory(cls):
+        response = ""
+        for owner, factory in factories.items():
+            response += "- <@{0}>: fábrica \"{1}\" de {2}s.\n".format(owner, factory["name"], factory["product"])
+        if response == "":
+            response = "No existe ninguna fábrica por el momento."
+        return response
 
     @classmethod
     def deleteFactory(cls, owner):

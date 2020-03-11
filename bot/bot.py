@@ -37,6 +37,8 @@ Por ejemplo: `&factory create mi fabrica de tomates&tomate`
         yield from message.channel.send(response)
     elif command == '&factory delete':
         yield from message.channel.send(Command.deleteFactory(message.author.id))
+    elif command == '&factory list':
+        yield from message.channel.send(Command.listFactory())
     elif command == '&inventory':
         yield from message.channel.send(Command.inventory(message.author.id))
     elif command.startswith('&leet'):
