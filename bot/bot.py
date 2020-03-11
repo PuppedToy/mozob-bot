@@ -6,7 +6,6 @@ from bot.commands import Command
 
 client = discord.Client()
 
-
 @client.event
 @asyncio.coroutine
 def on_ready():
@@ -38,10 +37,11 @@ Por ejemplo: `&factory create mi fabrica de tomates&tomate`
         yield from message.channel.send(response)
     elif command == '&factory delete':
         yield from message.channel.send(Command.deleteFactory(message.author.id))
+    elif command == '&inventory':
+        yield from message.channel.send(Command.inventory(message.author.id))
     elif command.startswith('&leet'):
         response = Command.leet_speak(command.replace('&leet', ''))
         yield from message.channel.send('{0}'.format(response))
-
 
 # Set up the base bot
 class DiscordBot(object):

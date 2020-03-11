@@ -1,5 +1,9 @@
 import requests
+import threading
 
+PRODUCTION_INTERVAL = 60*60 # 1 product each hour
+
+inventories = {}
 factories = {}
 
 class Command:
@@ -16,6 +20,7 @@ class Command:
     `&leet <mensaje>`: Mi código venía con esta puta mierda que todavía no he quitado.
     `&factory create <Nombre fabrica>&<Nombre producto>`: Construye una nueva fábrica.
     `&factory delete`: Si tienes una fábrica, LA DESTRUYES PARA SIEMPRE.
+    `&inventory`: Muestra tu inventario
 '''
 
     @classmethod
@@ -37,6 +42,16 @@ class Command:
             del factories[owner]
             return response
 
+    @classmethod
+    def inventory(cls, owner):
+        if not owner in inventories:
+            return "Tienes la mochila vacía."
+        response = ""
+        for item, amount in inventories[owner].items():
+            if amount > 0:
+                response += "\t- {0}s: {1}\n".format(item, str(amount))
+        return response
+
     # Converts user-input to 1337 5p34k.
     @classmethod
     def leet_speak(cls, in_string):
@@ -46,3 +61,15 @@ class Command:
             out_string = out_string.replace(old, new)
 
         return out_string
+
+def produce():
+    for owner, factory in factories.items():
+        if not owner in inventories:
+            inventories[owner] = {}
+        item = factory["product"]
+        if not item in inventories[owner]:
+            inventories[owner][item] = 1
+        else:
+            inventories[owner][item] += 1
+    threading.Timer(PRODUCTION_INTERVAL, produce).start()
+threading.Timer(PRODUCTION_INTERVAL, produce).start()
