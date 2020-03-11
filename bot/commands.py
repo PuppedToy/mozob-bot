@@ -11,20 +11,31 @@ class Command:
     @classmethod
     def help(cls):
         return '''Lista de comandos:
-    &help: Te muestro este mensaje entero
-    &hello: Te saludo
-    &leet <mensaje>: Mi código venía con esta puta mierda que todavía no he quitado.
+    `&help`: Te muestro este mensaje entero
+    `&hello`: Te saludo
+    `&leet <mensaje>`: Mi código venía con esta puta mierda que todavía no he quitado.
+    `&factory create <Nombre fabrica>&<Nombre producto>`: Construye una nueva fábrica.
+    `&factory delete`: Si tienes una fábrica, LA DESTRUYES PARA SIEMPRE.
 '''
 
     @classmethod
     def createFactory(cls, owner, name, product):
         if owner in factories:
-            return "Parece que posees la fábrica \"{0}\" de {1}s. Solo puedes tener una fábrica!!!".format(factories[owner]["name"], factories[owner]["product"])
+            return "Parece que posees la fábrica \"{0}\" de {1}s. Solo puedes tener una fábrica!!! Si no te gusta tu fábrica, la puedes destruir con `factory delete`. Pero cuidado, que no hay vuelta atrás.".format(factories[owner]["name"], factories[owner]["product"])
         factories[owner] = {
             "name": name,
             "product": product
         }
         return "He creado tu fábrica \"{0}\" de {1}s correctamente.".format(name, product)
+
+    @classmethod
+    def deleteFactory(cls, owner):
+        if not owner in factories:
+            return "No puedes destruir algo que no tienes. Construye una fábrica con `factory create` para poder destruirla."
+        else:
+            response = "BUUUM!!! Adiós para siempre, fábrica \"{0}\"".format(factories[owner]["name"])
+            del factories[owner]
+            return response
 
     # Converts user-input to 1337 5p34k.
     @classmethod

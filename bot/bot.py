@@ -36,6 +36,8 @@ Por ejemplo: `&factory create mi fabrica de tomates&tomate`
         else:
             response = Command.createFactory(message.author.id, parts[0].strip(), parts[1].strip())
         yield from message.channel.send(response)
+    elif command == '&factory delete':
+        yield from message.channel.send(Command.deleteFactory(message.author.id))
     elif command.startswith('&leet'):
         response = Command.leet_speak(command.replace('&leet', ''))
         yield from message.channel.send('{0}'.format(response))
