@@ -1,5 +1,6 @@
 import requests
 
+factories = {}
 
 class Command:
 
@@ -14,6 +15,16 @@ class Command:
     &hello: Te saludo
     &leet <mensaje>: Mi código venía con esta puta mierda que todavía no he quitado.
 '''
+
+    @classmethod
+    def createFactory(cls, owner, name, product):
+        if owner in factories:
+            return "Parece que posees la fábrica \"{0}\" de {1}s. Solo puedes tener una fábrica!!!".format(factories[owner]["name"], factories[owner]["product"])
+        factories[owner] = {
+            "name": name,
+            "product": product
+        }
+        return "He creado tu fábrica \"{0}\" de {1}s correctamente.".format(name, product)
 
     # Converts user-input to 1337 5p34k.
     @classmethod

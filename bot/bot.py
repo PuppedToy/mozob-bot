@@ -26,6 +26,16 @@ def on_message(message):
         yield from message.channel.send(Command.help())
     elif command == '&hello':
         yield from message.channel.send(Command.hello(message.author.id))
+    elif command.startswith('&factory create'):
+        parts = command.replace('&factory create', '').split('&')
+        if len(parts) != 2:
+            response = '''No has usado bien el comando. 
+Hay que usar: `&factory create <Nombre fabrica>&<Nombre producto>`
+Por ejemplo: `&factory create mi fabrica de tomates&tomate`
+'''
+        else:
+            response = Command.createFactory(message.author.id, parts[0].strip(), parts[1].strip())
+        yield from message.channel.send(response)
     elif command.startswith('&leet'):
         response = Command.leet_speak(command.replace('&leet', ''))
         yield from message.channel.send('{0}'.format(response))
