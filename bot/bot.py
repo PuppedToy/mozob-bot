@@ -20,14 +20,14 @@ def on_message(message):
     command = message.content.lower()
     if message.author == client.user:
         return
-    elif command == '!':
+    elif command == '&':
         yield from message.channel.send('<@{0}>, No command has been passed.'.format(message.author.id))
-    elif command == '!help':
+    elif command == '&help':
         yield from message.channel.send(Command.help())
-    elif command == '!hello':
+    elif command == '&hello':
         yield from message.channel.send(Command.hello(message.author.id))
-    elif command.startswith('!leet'):
-        response = Command.leet_speak(command.replace('!leet', ''))
+    elif command.startswith('&leet'):
+        response = Command.leet_speak(command.replace('&leet', ''))
         yield from message.channel.send('{0}'.format(response))
 
 
