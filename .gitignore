@@ -33,8 +33,6 @@ wheels/
 
 # .ini files
 *.ini
-# But not the dev one
-!dev.config.ini
 
 # Installer logs
 pip-log.txt
