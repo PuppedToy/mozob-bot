@@ -7,14 +7,13 @@ You need Python 3.4 or later to run discord-bot-boilerplate.
 Recommend using Python 3.6+
 Python packages are available at http://www.python.org/getit/
 
-Keep in mind that you will be testing with "Pruebas de Mozob" bot, which is already in our discord group
+**IMPORTANT**: To get the bot dev token, talk to **@PuppedToy**
 
 ## Running the tests
 
 To Run:
 ```
 $ pip install -r requirements.txt
-$ cp dev.config.ini config.ini
 $ python app.py
 ```
 
