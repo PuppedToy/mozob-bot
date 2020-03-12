@@ -1,4 +1,4 @@
 discord.py
 requests
 mysql.connector
-mysql-dotenv
+python-dotenv
