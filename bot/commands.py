@@ -1,10 +1,14 @@
 import requests
 import threading
 
-PRODUCTION_INTERVAL = 60*60 # 1 product each hour
+from bot.queries import Connection
+connection = Connection()
 
-inventories = {}
-factories = {}
+PRODUCTION_INTERVAL = 60*60 # 1 product each hour
+# PRODUCTION_INTERVAL = 10 # 1 product each 10s
+
+factories = connection.getFactories()
+inventories = connection.getInventories()
 
 class Command:
 
@@ -32,6 +36,7 @@ class Command:
             "name": name,
             "product": product
         }
+        connection.insertFactory(owner, name, product)
         return "He creado tu fábrica \"{0}\" de {1}s correctamente.".format(name, product)
 
     @classmethod
@@ -50,6 +55,7 @@ class Command:
         else:
             response = "BUUUM!!! Adiós para siempre, fábrica \"{0}\"".format(factories[owner]["name"])
             del factories[owner]
+            connection.deleteFactory(owner)
             return response
 
     @classmethod
@@ -79,7 +85,10 @@ def produce():
         item = factory["product"]
         if not item in inventories[owner]:
             inventories[owner][item] = 1
+            connection.createInventory(owner, item, inventories[owner][item])
         else:
             inventories[owner][item] += 1
+            connection.updateInventory(owner, item, inventories[owner][item])
+
     threading.Timer(PRODUCTION_INTERVAL, produce).start()
 threading.Timer(PRODUCTION_INTERVAL, produce).start()

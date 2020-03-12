@@ -14,6 +14,7 @@ Python packages are available at http://www.python.org/getit/
 To Run:
 ```
 $ pip install -r requirements.txt
+$ cp .env.sample .env
 $ python app.py
 ```
 
