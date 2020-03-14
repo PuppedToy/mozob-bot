@@ -41,6 +41,8 @@ Por ejemplo: `&factory create mi fabrica de tomates&tomate`
         yield from message.channel.send(Command.listFactory())
     elif command == '&inventory':
         yield from message.channel.send(Command.inventory(message.author.id))
+    elif command == '&tft random_classes':
+        yield from message.channel.send(Command.tftRandomClasses(message.author.id))
     elif command.startswith('&leet'):
         response = Command.leet_speak(command.replace('&leet', ''))
         yield from message.channel.send('{0}'.format(response))

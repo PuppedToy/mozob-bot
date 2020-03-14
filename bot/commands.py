@@ -1,5 +1,8 @@
 import requests
 import threading
+import random
+
+TFT_CLASSES = ['Inferno', 'Light', 'Poison', 'Crystal', 'Desert', 'Ocean', 'Shadow', 'Electric', 'Lunar', 'Mountain', 'Woodland', 'Cloud', 'Glacial', 'Steel', 'Alchemist', 'Avatar', 'Ranger', 'Mage', 'Mystic', 'Soulbound', 'Summoner', 'Assasain', 'Berserker', 'Predator', 'Warden', 'Blademaster', 'Druid']
 
 from bot.queries import Connection
 connection = Connection()
@@ -26,6 +29,7 @@ class Command:
     `&factory delete`: Si tienes una fábrica, LA DESTRUYES PARA SIEMPRE.
     `&factory list`: Muestra la lista de fábricas existentes.
     `&inventory`: Muestra tu inventario
+    `&tft random_classes`: Genera dos clases (clases/orígenes) aleatorios para jugar tu próximo TFT
 '''
 
     @classmethod
@@ -77,6 +81,11 @@ class Command:
             out_string = out_string.replace(old, new)
 
         return out_string
+
+    @classmethod
+    def tftRandomClasses(cls, sender):
+        return "<@{0}>, en la próxima partida de TFT vas a ir a {1} y {2}. Buena suerte!".format(sender, random.choice(TFT_CLASSES), random.choice(TFT_CLASSES))
+
 
 def produce():
     for owner, factory in factories.items():
