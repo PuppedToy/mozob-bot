@@ -2,7 +2,9 @@ import os
 import discord
 import asyncio
 import configparser
+
 from bot.commands import Command
+from bot.tftHiddenQuests import TFTHiddenQuestsCommands
 
 client = discord.Client()
 
@@ -35,14 +37,67 @@ Por ejemplo: `&factory create mi fabrica de tomates&tomate`
         else:
             response = Command.createFactory(message.author.id, parts[0].strip(), parts[1].strip())
         yield from message.channel.send(response)
+
     elif command == '&factory delete':
         yield from message.channel.send(Command.deleteFactory(message.author.id))
+
     elif command == '&factory list':
         yield from message.channel.send(Command.listFactory())
+
     elif command == '&inventory':
         yield from message.channel.send(Command.inventory(message.author.id))
+
     elif command == '&tft random_classes':
         yield from message.channel.send(Command.tftRandomClasses(message.author.id))
+
+    elif command == '&tft hidden_quest help':
+        responses = Command.tftHiddenQuestHelp()
+        yield from message.channel.send(responses[0])
+        yield from message.channel.send(responses[1])
+
+    elif command.startswith('&tft hidden_quest create'):
+        parts = command.split(' ')
+        if len(parts) == 3:
+            yield from message.channel.send('{0}'.format(TFTHiddenQuestsCommands.create(message.author, message.channel)))
+        elif len(parts) == 4:
+            yield from message.channel.send('{0}'.format(TFTHiddenQuestsCommands.create(message.author, message.channel, parts[3])))
+        else:
+            yield from message.channel.send('{0}'.format(TFTHiddenQuestsCommands.create(message.author, message.channel, parts[3], parts[4])))
+
+    elif command.startswith('&tft hidden_quest join'):
+        parts = command.split(' ')
+        if len(parts) < 4:
+            yield from message.channel.send('Es necesario especificar el ID de la sala a la que te quieres unir. Por ejemplo, `&tft hidden_quest join patata-18`.')
+        else:
+            yield from message.channel.send('{0}'.format(TFTHiddenQuestsCommands.join(message.author, parts[3])))
+
+    elif command.startswith('&tft hidden_quest destroy'):
+        yield from message.channel.send('{0}'.format(TFTHiddenQuestsCommands.destroy(message.author)))
+
+    elif command.startswith('&tft hidden_quest leave'):
+        yield from message.channel.send('{0}'.format(TFTHiddenQuestsCommands.leave(message.author)))
+
+    elif command.startswith('&tft hidden_quest reroll'):
+        yield from message.channel.send('{0}'.format(TFTHiddenQuestsCommands.reroll(message.author)))
+
+    elif command.startswith('&tft hidden_quest ready'):
+        yield from message.channel.send('{0}'.format(TFTHiddenQuestsCommands.ready(message.author)))
+
+    elif command.startswith('&tft hidden_quest start'):
+        yield from message.channel.send('{0}'.format(TFTHiddenQuestsCommands.start(message.author)))
+
+    elif command.startswith('&tft hidden_quest end'):
+        parts = command.split(' ')
+        if len(parts) < 5:
+            yield from message.channel.send('Es necesario especificar la posición en la que has quedado y si has cumplido tu misión (y) o no (n). Por ejemplo, si has quedado 5º y has fracasado en tu misión secreta, deberías poner: `&tft hidden_quest end 3 n`.')
+        else:
+            yield from message.channel.send('{0}'.format(TFTHiddenQuestsCommands.end(message.author, parts[3], parts[4])))
+
+    elif command.startswith('&tft hidden_quest status'):
+        response = TFTHiddenQuestsCommands.status(message.author)
+        if response is not None:
+            yield from message.channel.send('{0}'.format(response))
+
     elif command.startswith('&leet'):
         response = Command.leet_speak(command.replace('&leet', ''))
         yield from message.channel.send('{0}'.format(response))
