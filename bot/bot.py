@@ -55,6 +55,9 @@ Por ejemplo: `&factory create mi fabrica de tomates&tomate`
         yield from message.channel.send(responses[0])
         yield from message.channel.send(responses[1])
 
+    elif command == '&tft hidden_quest commands':
+        yield from message.channel.send(Command.tftHiddenQuestCommands())
+
     elif command.startswith('&tft hidden_quest create'):
         parts = command.split(' ')
         if len(parts) == 3:
