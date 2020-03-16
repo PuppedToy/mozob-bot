@@ -3,11 +3,6 @@ import re
 import numpy as np
 import asyncio
 
-# TODO
-#   Less restrictive quests (2 specific items out of 4 maybe and 3 out of 7)
-#   Choose between 3 characters with an item
-#   Finish the game with 3 out of 6 classes/origins
-
 TFT_HIDDEN_QUEST_VERSION = 0
 
 TFT_CLASSES = [
