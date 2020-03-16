@@ -3,7 +3,7 @@ import re
 import numpy as np
 import asyncio
 
-TFT_HIDDEN_QUEST_VERSION = 0
+TFT_HIDDEN_QUEST_VERSION = '1.01'
 
 TFT_CLASSES = [
     {
@@ -206,11 +206,11 @@ def tft_6_team_class():
     return 'Acaba la partida con 6 unidades del {0} "{1}"'.format(CLASS['type'], CLASS['name'])
 
 def tft_2_4_team_class():
-    CLASS_4 = random.choice(list(filter(lambda el: 4 in el['props'] and el['type'] == 'class', TFT_CLASSES)))
+    CLASS_4 = random.choice(list(filter(lambda el: 4 in el['props'], TFT_CLASSES)))
     CLASS_2 = random.choice(
         list(
             filter(
-                lambda el: 2 in el['props'] and el['type'] == 'class' and el['name'] != CLASS_4['name'] and el['type'] == CLASS_4['type'], 
+                lambda el: 2 in el['props'] and el['name'] != CLASS_4['name'] and el['type'] == CLASS_4['type'], 
                 TFT_CLASSES
             )
         )
@@ -218,11 +218,11 @@ def tft_2_4_team_class():
     return 'Acaba la partida con 4 unidades del {0} "{1}" y 2 unidades del {0} "{2}"'.format(CLASS_4['type'], CLASS_4['name'], CLASS_2['name'])
 
 def tft_3_3_team_class():
-    CLASS_A = random.choice(list(filter(lambda el: 3 in el['props'] and el['type'] == 'class', TFT_CLASSES)))
+    CLASS_A = random.choice(list(filter(lambda el: 3 in el['props'], TFT_CLASSES)))
     CLASS_B = random.choice(
         list(
             filter(
-                lambda el: 3 in el['props'] and el['type'] == 'class' and el['name'] != CLASS_A['name'] and el['type'] == CLASS_A['type'], 
+                lambda el: 3 in el['props'] and el['name'] != CLASS_A['name'] and el['type'] == CLASS_A['type'], 
                 TFT_CLASSES
             )
         )
