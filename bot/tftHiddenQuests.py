@@ -152,6 +152,7 @@ TFT_CLASSES = [
         'type': 'origin'
     },
 ]
+TFT_CLASSES_NAMES = list(map(lambda el: el['name'], TFT_CLASSES))
 
 BASIC_ITEMS = ['B.F. Sword', 'Needlessly Large Rod', 'Recurve Bow', 'Sparring Gloves', 'Tear of the Goddess', 'Chain Vest', 'Giant\'s Belt', 'Negatron Cloak']
 UPGRADED_ITEMS = ['Bloodthirster', 'Hand of Justice', 'Jeweled Gauntlet', 'Last Whisper', 'Locket of the Iron Solari', 'Luden\'s Echo', 'Rabadon\'s Deathcap', 'Rapid Firecannon', 'Redemption', 'Runaan\'s Hurricane', 'Statikk Shiv', 'Bramble Vest', 'Deathblade', 'Dragon\'s Claw', 'Guinsoo\'s Rageblade', 'Hush', 'Ionic Spark', 'Quicksilver', 'Red Buff', 'Spear of Shojin', 'Titan\'s Resolve', 'Warmog\'s Armor', 'Frozen Heart', 'Giant Slayer', 'Hextech Gunblade', 'Zeke\'s Herald', 'Iceborne Gauntlet', 'Sword Breaker', 'Titanic Hydra', 'Trap Claw']
@@ -161,6 +162,14 @@ CHAMPIONS_2 = ['Braum', 'Jax', 'LeBlanc', 'Malzahar', 'Neeko', 'Rek\'Sai', 'Senn
 CHAMPIONS_3 = ['Aatrox', 'Azir', 'Dr. Mundo', 'Ezreal', 'Karma', 'Kindred', 'Nautilus', 'Nocturne', 'Qiyana', 'Sion', 'Sivir', 'Soraka', 'Veigar']
 CHAMPIONS_4 = ['Annie', 'Ashe', 'Brand', 'Janna', 'Kha\'Zix', 'Lucian', 'Malphite', 'Olaf', 'Twitch', 'Yorick']
 CHAMPIONS_5 = ['Amumu', 'Master Yi', 'Nami', 'Singed', 'Taric', 'Zed']
+
+CHAMPIONS_WITH_PRICE = np.concatenate([
+    list(map(lambda el: '[1] ' + el, CHAMPIONS_1)),
+    list(map(lambda el: '[2] ' + el, CHAMPIONS_2)),
+    list(map(lambda el: '[3] ' + el, CHAMPIONS_3)),
+    list(map(lambda el: '[4] ' + el, CHAMPIONS_4)),
+    list(map(lambda el: '[5] ' + el, CHAMPIONS_5))
+])
 
 IDS = list(map(lambda el: re.sub(r'[^a-z]', '', el.lower()), np.concatenate([
     ['alfalfa', 'almorta', 'guisante', 'frijol', 'garbanzo', 'habas', 'ejote', 'lenteja', 'altramuz', 'cacahuetes', 'soja', 'arveja', 'mungo', 'almendra', 'anacardo', 'avellana', 'castaña', 'gevuina', 'nuece', 'piñone', 'pistacho', 'calabaza', 'girasol', 'pipas', 'aguacate', 'albaricoque', 'piña', 'arandano', 'banana', 'cereza', 'ciruela', 'coco', 'damasco', 'durazno', 'frambuesa', 'fresa', 'frutilla', 'guinda', 'granada', 'grosella', 'higo', 'kiwi', 'lima', 'limon', 'mandarina', 'mango', 'manzana', 'maracuya', 'melocoton', 'melon', 'membrillo', 'mora', 'naranja', 'nectarina', 'papaya', 'palta', 'pera', 'piña', 'platano', 'pomelo', 'sandia', 'toronja', 'uva', 'zarzamora', 'patata', 'arroz', 'quinoa', 'asno', 'buey', 'vaca', 'pollo', 'pato', 'cabra', 'oveja', 'poni', 'caballo', 'gallo', 'gallina', 'toro', 'pavo', 'perdiz', 'cerdo', 'codorniz', 'conejo', 'hipopotamo', 'elefante', 'rinoceronte', 'llama'],
@@ -177,9 +186,9 @@ IDS = list(map(lambda el: re.sub(r'[^a-z]', '', el.lower()), np.concatenate([
 def gen_ID():
     return random.choice(IDS) + '-' + str(random.randint(1, 999))
 
-def get_n_from_list(items, n, repeat = True):
+def aux_tft_get_n_from_list(items, n, repeat = True):
     if repeat:
-        return map(lambda el: random.choice(items), [0] * n)
+        return list(map(lambda el: random.choice(items), [0] * n))
     else:
         result = []
         itemsCopy = list(items).copy()
@@ -188,6 +197,11 @@ def get_n_from_list(items, n, repeat = True):
             itemsCopy.remove(item)
             result.append(item)
         return result
+
+def aux_tft_get_n_champions_sorted_with_price(n, repeat = True):
+    result = aux_tft_get_n_from_list(CHAMPIONS_WITH_PRICE, n, repeat)
+    result.sort()
+    return result
 
 def aux_tft_create_list(items):
     return "\n" + "\n".join(map(lambda el: '- {0}'.format(el), items))
@@ -220,15 +234,42 @@ def tft_3_3_team_class():
     )
     return 'Acaba la partida con 3 unidades del {0} "{1}" y 3 unidades del {0} "{2}"'.format(CLASS_A['type'], CLASS_A['name'], CLASS_B['name'])
 
-def tft_2_items_same_character():
-    return 'Acaba la partida con un personaje con los siguientes objetos: "{0}" y "{1}"'.format(random.choice(UPGRADED_ITEMS), random.choice(UPGRADED_ITEMS))
+def tft_2_out_of_4_items_same_character():
+    items = aux_tft_create_list(aux_tft_get_n_from_list(UPGRADED_ITEMS, 4))
+    return 'Acaba la partida con un personaje equipado con dos de los siguientes objetos: {0}'.format(items)
 
 def tft_2_characters_same_item():
-    return 'Acaba la partida con dos personajes diferentes equipados con el siguiente objeto: "{0}"'.format(random.choice(np.concatenate([UPGRADED_ITEMS, ['Thief\'s Gloves']])))
+    itemsWithGauntlet = np.concatenate([UPGRADED_ITEMS, ['Thief\'s Gloves']])
+    items = aux_tft_create_list(aux_tft_get_n_from_list(itemsWithGauntlet, 6, False))
+    return 'Acaba la partida con dos personajes diferentes equipados con el mismo objeto, dentro de los siguientes: {0}'.format(items)
 
-def tft_3_out_of_6_items():
-    items = aux_tft_create_list(get_n_from_list(UPGRADED_ITEMS, 6))
-    return 'Acaba la partida con un personaje con 3 de los siguientes 6 objetos (sin repetirlos), a tu elección: {0}'.format(items)
+def tft_3_out_of_10_items():
+    items = aux_tft_create_list(aux_tft_get_n_from_list(UPGRADED_ITEMS, 8))
+    return 'Acaba la partida con un personaje equipado con 3 de los siguientes objetos, a tu elección: {0}'.format(items)
+
+def tft_forbidden_champions():
+    characters = aux_tft_create_list(aux_tft_get_n_champions_sorted_with_price(12, False))
+    return 'No utilices en ninguna batalla a ninguno de los siguientes personajes: {0}'.format(characters)
+
+def tft_forbidden_items():
+    items = aux_tft_create_list(aux_tft_get_n_from_list(UPGRADED_ITEMS, 7, False))
+    return 'No construyas ni obtengas en un caroussel ninguno de los siguientes objetos: {0}'.format(items)
+
+def tft_forbidden_classes():
+    classes = aux_tft_create_list(aux_tft_get_n_from_list(TFT_CLASSES_NAMES, 7, False))
+    return 'No actives el beneficio de ninguna de las siguientes clases/orígenes: {0}'.format(classes)
+
+def tft_3_out_of_8_classes():
+    classes = aux_tft_create_list(aux_tft_get_n_from_list(TFT_CLASSES_NAMES, 8))
+    return 'Acaba la partida con 3 de las siguientes 8 clases/orígenes activadas: {0}'.format(classes)
+
+def tft_2_out_of_6_characters_with_item():
+    characters = aux_tft_get_n_champions_sorted_with_price(6)
+    charactersWithItems = []
+    for character in characters:
+        charactersWithItems.append('{0} equipado con el objeto "{1}"'.format(character, random.choice(UPGRADED_ITEMS)))
+    characters = aux_tft_create_list(charactersWithItems)
+    return 'Acaba la partida con dos de los siguientes personajes: {0}'.format(characters)
 
 def tft_3_stars():
     characters = aux_tft_create_list([
@@ -243,61 +284,28 @@ def tft_3_stars():
     return 'Acaba con un personaje de 3 estrellas (***) a tu elección, de entre los siguientes: {0}'.format(characters)
 
 def tft_5_champions():
-    characters = get_n_from_list(np.concatenate([
-        list(map(lambda el: '[1] ' + el, CHAMPIONS_1)),
-        list(map(lambda el: '[2] ' + el, CHAMPIONS_2)),
-        list(map(lambda el: '[3] ' + el, CHAMPIONS_3)),
-        list(map(lambda el: '[4] ' + el, CHAMPIONS_4)),
-        list(map(lambda el: '[5] ' + el, CHAMPIONS_5))
-    ]), 15, False)
-    characters.sort()
-    characters = aux_tft_create_list(characters)
+    characters = aux_tft_create_list(aux_tft_get_n_champions_sorted_with_price(15, False))
     return 'Acaba la partida con 5 de los siguientes personajes (a tu elección): {0}'.format(characters)
-
 
 def generate_quest():
     return random.choice([
         tft_6_team_class,
         tft_2_4_team_class,
         tft_3_3_team_class,
-        tft_2_items_same_character,
+        tft_2_out_of_4_items_same_character,
         tft_2_characters_same_item,
-        tft_3_out_of_6_items,
+        tft_3_out_of_10_items,
+        tft_forbidden_champions,
+        tft_forbidden_items,
+        tft_forbidden_classes,
+        tft_3_out_of_8_classes,
+        tft_2_out_of_6_characters_with_item,
         tft_3_stars,
         tft_5_champions
     ])()
 
-# print(gen_ID())
-# print(gen_ID())
-# print(gen_ID())
-# print(gen_ID())
-# print(gen_ID())
-
-# print('----')
-# print('----')
-# print('----')
-
-# print(generate_quest())
-# print(generate_quest())
-# print(generate_quest())
-# print(generate_quest())
-# print(generate_quest())
-# print(generate_quest())
-# print(generate_quest())
-# print(generate_quest())
-# print(generate_quest())
-# print(generate_quest())
-# print(generate_quest())
-# print(generate_quest())
-# print(generate_quest())
-# print(generate_quest())
-# print(generate_quest())
-
 tftRooms = {}
 tftPlayers = {}
-
-def tellPlayer(player, message):
-    return '<@{0}>, {1}'.format(player, message)
 
 class TFTRoom:
 
@@ -309,7 +317,6 @@ class TFTRoom:
         self.join(creator)
         self.creator = creator.id
         self.channel = channel
-        print(self.players)
         self.players[creator.id]['creator'] = True
         self.status = 'preparing'
 
@@ -348,11 +355,6 @@ class TFTRoom:
             return 'tu sala se ha destruido correctamente.'
 
     def join(self, player):
-        print('join')
-        print(tftPlayers)
-        print(player.id)
-        print(player.id in tftPlayers)
-        print('----')
         if player.id in self.players.items():
             return 'no te preocupes. Ya estabas unido a esta sala. Si lo que deseas es irte, deberías utilizar `&tft hidden_quest leave`'
         elif player.id in tftPlayers:
@@ -360,7 +362,6 @@ class TFTRoom:
         elif len(self.players) >= 8:
             return 'lo siento, esta sala ya está llena.'
         else:
-            print('b1')
             self.players[player.id] = {
                 'creator': False,
                 'user': player,
@@ -372,11 +373,8 @@ class TFTRoom:
                 'position': 0,
                 'value': 0
             }
-            print('b2')
             tftPlayers[player.id] = self.id
-            print('b3')
             self.sendQuest(player)
-            print('b4')
             return 'te has unido con éxito a la sala _{0}_.'.format(tftPlayers[player.id])
 
     def leave(self, playerId):
@@ -472,9 +470,6 @@ class TFTRoom:
         self.destroy()
 
     def sendQuest(self, player):
-        print('Sending quest...')
-        print(player)
-        print(player.send)
         asyncio.ensure_future(player.send('Esta es tu misión secreta: _{0}_'.format(self.players[player.id]['quest'])))
         asyncio.ensure_future(player.send('Te quedan {0}/{1} rerolls disponibles.'.format(self.players[player.id]['rerolls'], self.rerolls)))
 
