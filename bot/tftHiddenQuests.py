@@ -231,7 +231,7 @@ def tft_3_3_team_class():
 
 def tft_2_out_of_4_items_same_character():
     items = aux_tft_create_list(aux_tft_get_n_from_list(UPGRADED_ITEMS, 4))
-    return 'Acaba la partida con un personaje equipado con dos de los siguientes objetos: {0}'.format(items)
+    return 'Acaba la partida con un personaje equipado con 2 de los siguientes objetos, a tu elección: {0}'.format(items)
 
 def tft_2_characters_same_item():
     itemsWithGauntlet = np.concatenate([UPGRADED_ITEMS, ['Thief\'s Gloves']])
@@ -247,7 +247,7 @@ def tft_forbidden_champions():
     return 'No utilices en ninguna batalla a ninguno de los siguientes personajes: {0}'.format(characters)
 
 def tft_forbidden_items():
-    items = aux_tft_create_list(aux_tft_get_n_from_list(UPGRADED_ITEMS, 7, False))
+    items = aux_tft_create_list(aux_tft_get_n_from_list(UPGRADED_ITEMS, 14, False))
     return 'No construyas ni obtengas en un caroussel ninguno de los siguientes objetos: {0}'.format(items)
 
 def tft_forbidden_classes():
@@ -255,7 +255,7 @@ def tft_forbidden_classes():
     return 'No actives el beneficio de ninguna de las siguientes clases/orígenes: {0}'.format(classes)
 
 def tft_3_out_of_8_classes():
-    classes = aux_tft_create_list(aux_tft_get_n_from_list(TFT_CLASSES_NAMES, 8))
+    classes = aux_tft_create_list(aux_tft_get_n_from_list(TFT_CLASSES_NAMES, 8, False))
     return 'Acaba la partida con 3 de las siguientes 8 clases/orígenes activadas: {0}'.format(classes)
 
 def tft_2_out_of_6_characters_with_item():
@@ -282,6 +282,46 @@ def tft_5_champions():
     characters = aux_tft_create_list(aux_tft_get_n_champions_sorted_with_price(15, False))
     return 'Acaba la partida con 5 de los siguientes personajes (a tu elección): {0}'.format(characters)
 
+def tft_3_items_2_champions():
+    characters = aux_tft_create_list(aux_tft_get_n_champions_sorted_with_price(5, False))
+    items = aux_tft_create_list(aux_tft_get_n_from_list(UPGRADED_ITEMS, 15))
+    return 'Elige 2 personajes de la lista. Acaba la partida con ambos en el equipo equipados con 3 objetos de la lista cada uno. Solo puedes repetir objetos si aparecen duplicados en la lista.\n\nPersonajes: {0}\n\nObjetos: {1}'.format(characters, items)
+
+def tft_team_leader():
+    defeatConditions = aux_tft_create_list([
+        'El personaje elegido aparece en la tienda y no lo compras (a menos que lo tengas a ***).', 
+        'El personaje elegido aparece en un caroussel y, sin que otro personaje te lo robe, decides no adquirirlo (a menos que lo tengas a ***).',
+        'Equipas un objeto a un personaje que no sea el elegido antes de que el elegido posea el máximo de objetos posible.', 
+        'Libras una sola batalla sin el elegido (una vez ha sido adquirido).',
+        'No llegas a obtener al elegido en toda la partida.', 
+        'Libras una sola batalla sin colocar los personajes de forma simétrica, donde el eje de simetría contenga al elegido (esto solo aplica desde que se obtiene al elegido).',
+    ])
+    characters = aux_tft_create_list(aux_tft_get_n_champions_sorted_with_price(3, False))
+    return 'Elige uno de los siguientes 3 personajes para hacerlo el líder de tu equipo: {0}\nTienes estas condiciones de derrota: {1}.\nAclaración: si decides no adquirir un personaje de los propuestos la primera vez que tienes la posibilidad, todavía optas a obtener el resto de ellos.'.format(characters, defeatConditions)
+
+def tft_fast_campions():
+    characters = aux_tft_create_list(aux_tft_get_n_champions_sorted_with_price(5, False))
+    return 'Debes comprar los 3 primeros personajes que encuentres en la tienda dentro de la siguiente lista: {0}.\nPierdes si dejas pasar uno solo de ellos, si no los incluyes en todos los combates desde la adquisición o si acabas la partida sin haber encontrado 3 de ellos.'.format(characters)
+
+def tft_fast_golem_kill():
+    eligibleCharacters = np.concatenate([
+        list(map(lambda el: '[1] ' + el, CHAMPIONS_1)),
+        list(map(lambda el: '[2] ' + el, CHAMPIONS_2)),
+        list(map(lambda el: '[3] ' + el, CHAMPIONS_3)),
+        ['[4] ' + random.choice(CHAMPIONS_4)]
+    ])
+    characters = aux_tft_get_n_from_list(eligibleCharacters, 12, False)
+    characters.sort()
+    characters = aux_tft_create_list(characters)
+    return 'Derrota a los golems **únicamente con 4 personajes**. Estos personajes podrán ser elegidos dentro de las siguientes opciones: {0}'.format(characters)
+
+def tft_1_champion_1_class_1_item():
+    character = random.choice(CHAMPIONS_WITH_PRICE)
+    itemsWithGauntlet = np.concatenate([UPGRADED_ITEMS, ['Thief\'s Gloves']])
+    item = random.choice(itemsWithGauntlet)
+    chosenclass = random.choice(TFT_CLASSES)
+    return 'Adquiere lo más rápido posible un {0} equipado con un {1}. Adicionalmente, activa lo más rápido posible la {2} {3}. Libra el resto de batallas con ellos. Deberás acabar la partida con todos los requisitos cumplidos.'.format(character, item, chosenclass['type'], chosenclass['name'])
+
 def generate_quest():
     return random.choice([
         tft_6_team_class,
@@ -296,7 +336,12 @@ def generate_quest():
         tft_3_out_of_8_classes,
         tft_2_out_of_6_characters_with_item,
         tft_3_stars,
-        tft_5_champions
+        tft_5_champions,
+        tft_3_items_2_champions,
+        tft_team_leader,
+        tft_fast_campions,
+        tft_fast_golem_kill,
+        tft_1_champion_1_class_1_item
     ])()
 
 tftRooms = {}
