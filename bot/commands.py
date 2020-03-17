@@ -118,7 +118,7 @@ Lista de pasos para jugar este modo:
     `&tft hidden_quest reroll`: Gastas un reroll y te asigno una misión secreta nueva.
     `&tft hidden_quest ready`: Aceptas tu misión secreta y marcas que estás listo para jugar a TFT.
     `&tft hidden_quest start`: El creador podrá utilizar este comando para comenzar la partida de TFT cuando todos hayan marcado que están listos.
-    `&tft hidden_quest end <posición> <he_completado_mi_mision (y/n)`: Cuando un jugador acaba su partida, deberá poner este comando identificando en que _posición_ ha quedado y si ha completado su misión (**_y_**) o no (**_n_**).
+    `&tft hidden_quest end <posición> <he_completado_mi_mision (y/n)>`: Cuando un jugador acaba su partida, deberá poner este comando identificando en que _posición_ ha quedado y si ha completado su misión (**_y_**) o no (**_n_**).
     `&tft hidden_quest status`: Muestra el estado de la sala en la que estás.
 '''
 

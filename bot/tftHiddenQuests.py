@@ -4,6 +4,7 @@ import numpy as np
 import asyncio
 
 TFT_HIDDEN_QUEST_VERSION = '1.01'
+AUTODESTRUCTION_TIME = 60*60*4 # Autodestruction after 4 hours
 
 TFT_CLASSES = [
     {
@@ -364,6 +365,9 @@ class TFTRoom:
         print('Internal error: player {0} should not try to ready from room "{1}"', player, self.id)
         return 'este mensaje no debería llegarte nunca y es un error interno. Por favor, espera mientras lo arreglamos.'
 
+    def sendChannel(self, message):
+        asyncio.ensure_future(self.channel.send(message))
+
     def playersWithStatus(self, status):
         playersWithStatusAmount = 0
         for playerId, player in self.players.items():
@@ -381,12 +385,15 @@ class TFTRoom:
         for playerId, player in self.players.items():
             asyncio.ensure_future(player['user'].send(message))
 
-    def destroy(self, player = None):
+    def destroy(self, player = None, automatic = False):
         if player != None and player != self.creator:
             return 'no tienes permisos para hacer eso. Pídele a <@{0}> que lo haga.'.format(self.creator)
         else:
-            if player != None:
-                self.sendEveryPlayer('La sala de TFT en la que estabas ({0}) ha sido destruida.'.format(self.id))
+            if player != None or automatic:
+                self.sendEveryPlayer('La sala de TFT _{0}_ en la que estabas ha sido destruida.'.format(self.id))
+
+            if automatic:
+                self.sendChannel('La sala de TFT _{0}_ ha sido destruida porque llevaba demasiado tiempo activa.'.format(self.id))
 
             for playerId, player in self.players.items():
                 del tftPlayers[playerId]
@@ -558,25 +565,31 @@ class TFTRoom:
                 gameStatus += '\t#{0} - <@{1}> [Posición {2}]\n'.format(count, playerId, player['position'])
                 count += 1
         else:
-            asyncio.ensure_future(self.channel.send(self.internalError()))
+            self.sendChannel(self.internalError())
             return
 
-        asyncio.ensure_future(self.channel.send('Sala "{0}" - {1}'.format(self.id, gameStatus)))
+        self.sendChannel('Sala "{0}" - {1}'.format(self.id, gameStatus))
 
         if self.status == 'finished':
-            asyncio.ensure_future(self.channel.send('Y ahora procedo a revelar las misiones secretas de los jugadores.'))
+            self.sendChannel('Y ahora procedo a revelar las misiones secretas de los jugadores.')
             for playerId,player in self.players.items():
-                asyncio.ensure_future(self.channel.send('**La mision secreta de <@{0}> era la siguiente:** _{1}_'.format(playerId, player['quest'])))
+                self.sendChannel('**La mision secreta de <@{0}> era la siguiente:** _{1}_'.format(playerId, player['quest']))
                 if self.showDiscarded and len(player['discarded']) > 0:
-                    asyncio.ensure_future(self.channel.send('Además, <@{0}> descartó las siguientes misiones'.format(playerId)))
+                    self.sendChannel('Además, <@{0}> descartó las siguientes misiones'.format(playerId))
                     for quest in player['discarded']:
-                        asyncio.ensure_future(self.channel.send('_{0}_'.format(quest)))
+                        self.sendChannel('_{0}_'.format(quest))
 
 
 def tellUser(userId, message):
     return '<@{0}>, {1}'.format(userId, message)
 
 class TFTHiddenQuestsCommands:
+
+    @classmethod
+    async def autodestruction(cls, roomId):
+        await asyncio.sleep(AUTODESTRUCTION_TIME)
+        if roomId in tftRooms:
+            tftRooms[roomId].destroy(None, True)
 
     @classmethod
     def create(cls, creator, channel, rerolls = '3', showDiscarded = 'y'):
@@ -596,8 +609,9 @@ class TFTHiddenQuestsCommands:
         while newId in tftRooms:
             newId = gen_ID()
         tftRooms[newId] = TFTRoom(newId, creator, channel, rerollsNumber, showDiscardedBool)
+        asyncio.ensure_future(TFTHiddenQuestsCommands.autodestruction(newId))
         return tellUser(creator.id, 'has creado con éxito la sala _{0}_ y te has unido.'.format(newId))
-        # TODO Destroy after 24h
+
 
     @classmethod
     def join(cls, user, roomId):
