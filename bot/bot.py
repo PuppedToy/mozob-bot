@@ -18,7 +18,7 @@ def on_ready():
 @client.event
 @asyncio.coroutine
 def on_message(message):
-    command = message.content.lower()
+    command = message.content.lower().replace('&tft hq ', '&tft hidden_quest ')
     if message.author == client.user:
         return
     elif command == '&':
