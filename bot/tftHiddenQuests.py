@@ -150,8 +150,48 @@ TFT_CLASSES = [
 ]
 TFT_CLASSES_NAMES = list(map(lambda el: el['name'], TFT_CLASSES))
 
-BASIC_ITEMS = ['B.F. Sword', 'Needlessly Large Rod', 'Recurve Bow', 'Sparring Gloves', 'Tear of the Goddess', 'Chain Vest', 'Giant\'s Belt', 'Negatron Cloak']
-UPGRADED_ITEMS = ['Bloodthirster', 'Hand of Justice', 'Jeweled Gauntlet', 'Last Whisper', 'Locket of the Iron Solari', 'Luden\'s Echo', 'Rabadon\'s Deathcap', 'Rapid Firecannon', 'Redemption', 'Runaan\'s Hurricane', 'Statikk Shiv', 'Bramble Vest', 'Deathblade', 'Dragon\'s Claw', 'Guinsoo\'s Rageblade', 'Hush', 'Ionic Spark', 'Quicksilver', 'Red Buff', 'Spear of Shojin', 'Titan\'s Resolve', 'Warmog\'s Armor', 'Frozen Heart', 'Giant Slayer', 'Hextech Gunblade', 'Zeke\'s Herald', 'Iceborne Gauntlet', 'Sword Breaker', 'Titanic Hydra', 'Trap Claw']
+BASIC_ITEMS = [
+    '<:BFSword:689507540651999246> B.F. Sword',
+    '<:NeedlesslyLargeRod:689507541478277146> Needlessly Large Rod',
+    '<:RecurveBow:689507541129887804> Recurve Bow',
+    '<:SparringGloves:689507540945469440> Sparring Gloves',
+    '<:TearoftheGoddess:689507541083750407> Tear of the Goddess',
+    '<:ChainVest:689507540740210739> Chain Vest',
+    '<:GiantsBelt:689507540689617000> Giant\'s Belt',
+    '<:NegatronCloak:689507541235138623> Negatron Cloak'
+]
+UPGRADED_ITEMS = [
+    '<:Bloodthirster:689507540677165084> Bloodthirster',
+    '<:HandofJustice:689507541096726555> Hand of Justice',
+    '<:JeweledGauntlet:689507541079818424> Jeweled Gauntlet',
+    '<:LastWhisper:689507541189001313> Last Whisper',
+    '<:LocketoftheIronSolari:689507540823834681> Locket of the Iron Solari',
+    '<:LudensEcho:689507540991737915> Luden\'s Echo',
+    '<:RabadonsDeathcap:689507541163704428> Rabadon\'s Deathcap',
+    '<:RapidFirecannon:689507540954120308> Rapid Firecannon',
+    '<:Redemption:689507541012709471> Redemption',
+    '<:RunaansHurricane:689507541155315804> Runaan\'s Hurricane',
+    '<:StatikkShiv:689507540987412541> Statikk Shiv',
+    '<:BrambleVest:689507540631158788> Bramble Vest',
+    '<:Deathblade:689507540647804973> Deathblade',
+    '<:DragonsClaw:689507541096595467> Dragon\'s Claw',
+    '<:GuinsoosRageblade:689507541029486594> Guinsoo\'s Rageblade',
+    '<:Hush:689507541180350544> Hush',
+    '<:IonicSpark:689507541129887803> Ionic Spark',
+    '<:Quicksilver:689507541113241793> Quicksilver',
+    '<:RedBuff:689507541129887774> Red Buff',
+    '<:SpearofShojin:689507541180481648> Spear of Shojin',
+    '<:TitansResolve:689507541138276362> Titan\'s Resolve',
+    '<:WarmogsArmor:689507541612363827> Warmog\'s Armor',
+    '<:FrozenHeart:689507540546879608> Frozen Heart',
+    '<:GiantSlayer:689507541129887929> Giant Slayer',
+    '<:HextechGunblade:689507541142470701> Hextech Gunblade',
+    '<:ZekesHerald:689507541134213120> Zeke\'s Herald',
+    '<:IceborneGauntlet:689507541134213213> Iceborne Gauntlet',
+    '<:SwordBreaker:689507541201191047> Sword Breaker',
+    '<:TitanicHydra:689507540744142857> Titanic Hydra',
+    '<:TrapClaw:689507541105115236> Trap Claw'
+]
 
 CHAMPIONS_1 = ['Diana', 'Ivern', 'Kog\'Maw', 'Leona', 'Maokai', 'Nasus', 'Ornn', 'Renekton', 'Taliyah', 'Vayne', 'Vladimir', 'Warwick', 'Zyra']
 CHAMPIONS_2 = ['Braum', 'Jax', 'LeBlanc', 'Malzahar', 'Neeko', 'Rek\'Sai', 'Senna', 'Skarner', 'Syndra', 'Thresh', 'Varus', 'Volibear', 'Yasuo']
