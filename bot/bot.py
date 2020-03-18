@@ -46,6 +46,9 @@ Por ejemplo: `&factory create mi fabrica de tomates&tomate`
 
     elif command == '&inventory':
         yield from message.channel.send(Command.inventory(message.author.id))
+    
+    elif command == '&alaputa':
+        yield from message.channel.send(Command.alaputa())
 
     elif command == '&tft random_classes':
         yield from message.channel.send(Command.tftRandomClasses(message.author.id))

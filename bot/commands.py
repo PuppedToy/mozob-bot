@@ -74,6 +74,15 @@ class Command:
                 response += "\t- {0}s: {1}\n".format(item, str(amount))
         return response
 
+    @classmethod
+    def alaputa(cls):
+        a = random.random()
+        if a < 0.5:
+            frase = "A la puta tú"
+        else:
+            frase = "Coincido, a la puta con todo"
+        return frase
+
     # Converts user-input to 1337 5p34k.
     @classmethod
     def leet_speak(cls, in_string):
