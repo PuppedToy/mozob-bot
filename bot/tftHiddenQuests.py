@@ -3,148 +3,124 @@ import re
 import numpy as np
 import asyncio
 
-TFT_HIDDEN_QUEST_VERSION = '1.01'
+TFT_HIDDEN_QUEST_VERSION = '2.0'
 AUTODESTRUCTION_TIME = 60*60*4 # Autodestruction after 4 hours
 
 TFT_CLASSES = [
     {
-        'name': 'Ranger',
-        'props': [2, 4, 6],
+        'name': '<:blaster:689554747560427590> Blaster',
+        'props': [2, 4],
         'type': 'class'
     },
     {
-        'name': 'Alchemist',
+        'name': '<:brawler:689554748021669954> Brawler',
+        'props': [2, 4],
+        'type': 'class'
+    },
+    {
+        'name': '<:demolitionist:689554235620458599> Demolitionist',
+        'props': [2],
+        'type': 'class'
+    },
+    {
+        'name': '<:infiltrator:689554748075933958> Infiltrator',
+        'props': [2, 4],
+        'type': 'class'
+    },
+    {
+        'name': '<:manareaver:689554235674722374> Mana-Reaver',
+        'props': [2, 4],
+        'type': 'class'
+    },
+    {
+        'name': '<:mercenary:689554748118007808> Mercenary',
         'props': [1],
         'type': 'class'
     },
     {
-        'name': 'Avatar',
-        'props': [1],
-        'type': 'class'
-    },
-    {
-        'name': 'Mage',
-        'props': [3, 6],
-        'type': 'class'
-    },
-    {
-        'name': 'Mystic',
+        'name': '<:mystic:689554747765686292> Mystic',
         'props': [2, 4],
         'type': 'class'
     },
     {
-        'name': 'Assassin',
-        'props': [3, 6],
+        'name': '<:protector:689554748080390269> Protector',
+        'props': [2, 4],
         'type': 'class'
     },
     {
-        'name': 'Berserker',
-        'props': [3, 6],
+        'name': '<:sniper:689554748042772596> Sniper',
+        'props': [2],
         'type': 'class'
     },
     {
-        'name': 'Blademaster',
+        'name': '<:sorcerer:689554748155625472> Sorcerer',
         'props': [2, 4, 6],
         'type': 'class'
     },
     {
-        'name': 'Predator',
-        'props': [3],
-        'type': 'class'
-    },
-    {
-        'name': 'Summoner',
+        'name': '<:blademaster:689554747988115467> Blademaster',
         'props': [3, 6],
         'type': 'class'
     },
     {
-        'name': 'Alchemist',
+        'name': '<:starship:689554748181184623> Starship',
         'props': [1],
         'type': 'class'
     },
     {
-        'name': 'Warden',
+        'name': '<:vanguard:689554747920744511> Vanguard',
+        'props': [2, 4],
+        'type': 'class'
+    },
+
+    {
+        'name': '<:celestial:689554747941716012> Celestial',
         'props': [2, 4, 6],
-        'type': 'class'
+        'type': 'origin'
     },
     {
-        'name': 'Soulbound',
-        'props': [2],
-        'type': 'class'
+        'name': '<:chrono:689554747962949744> Chrono',
+        'props': [2, 4, 6],
+        'type': 'origin'
     },
     {
-        'name': 'Druid',
-        'props': [2],
-        'type': 'class'
-    },
-    {
-        'name': 'Inferno',
+        'name': '<:cybernetic:689554748181184610> Cybernetic',
         'props': [3, 6],
         'type': 'origin'
     },
     {
-        'name': 'Poison',
+        'name': '<:darkstar:689554748172402732> Dark Star',
+        'props': [3, 6],
+        'type': 'origin'
+    },
+    {
+        'name': '<:mechpilot:689554748118007862> Mech Pilot',
         'props': [3],
         'type': 'origin'
     },
     {
-        'name': 'Shadow',
+        'name': '<:rebel:689554747862024269> Rebel',
         'props': [3, 6],
         'type': 'origin'
     },
     {
-        'name': 'Crystal',
-        'props': [2],
-        'type': 'origin'
-    },
-    {
-        'name': 'Desert',
+        'name': '<:spacepirate:689554748155625474> Space Pirate',
         'props': [2, 4],
         'type': 'origin'
     },
     {
-        'name': 'Ocean',
-        'props': [2, 4],
-        'type': 'origin'
-    },
-    {
-        'name': 'Electric',
-        'props': [2, 3],
-        'type': 'origin'
-    },
-    {
-        'name': 'Glacial',
-        'props': [2, 4],
-        'type': 'origin'
-    },
-    {
-        'name': 'Light',
+        'name': '<:starguardian:689554747920744548> Star Guardian',
         'props': [3, 6],
         'type': 'origin'
     },
     {
-        'name': 'Lunar',
+        'name': '<:valkyrie:689554748256681994> Valkyrie',
         'props': [2],
         'type': 'origin'
     },
     {
-        'name': 'Mountain',
-        'props': [2],
-        'type': 'origin'
-    },
-    {
-        'name': 'Cloud',
-        'props': [2],
-        'type': 'origin'
-    },
-    {
-        'name': 'Woodland',
+        'name': '<:void:689554748197961778> Void',
         'props': [3],
-        'type': 'origin'
-    },
-    {
-        'name': 'Steel',
-        'props': [2],
         'type': 'origin'
     },
 ]
@@ -161,6 +137,9 @@ BASIC_ITEMS = [
     '<:NegatronCloak:689507541235138623> Negatron Cloak'
 ]
 UPGRADED_ITEMS = [
+    '<:ZzRotPortal:689551267303129125> Zz\'Rot Portal',
+    '<:ShroudofStillness:689551267395272707> Shroud of Stillness',
+    '<:ChaliceofFavor:689555849911205926> Chalice of Favor',
     '<:Bloodthirster:689507540677165084> Bloodthirster',
     '<:HandofJustice:689507541096726555> Hand of Justice',
     '<:JeweledGauntlet:689507541079818424> Jeweled Gauntlet',
@@ -176,7 +155,6 @@ UPGRADED_ITEMS = [
     '<:Deathblade:689507540647804973> Deathblade',
     '<:DragonsClaw:689507541096595467> Dragon\'s Claw',
     '<:GuinsoosRageblade:689507541029486594> Guinsoo\'s Rageblade',
-    '<:Hush:689507541180350544> Hush',
     '<:IonicSpark:689507541129887803> Ionic Spark',
     '<:Quicksilver:689507541113241793> Quicksilver',
     '<:RedBuff:689507541129887774> Red Buff',
@@ -187,17 +165,74 @@ UPGRADED_ITEMS = [
     '<:GiantSlayer:689507541129887929> Giant Slayer',
     '<:HextechGunblade:689507541142470701> Hextech Gunblade',
     '<:ZekesHerald:689507541134213120> Zeke\'s Herald',
-    '<:IceborneGauntlet:689507541134213213> Iceborne Gauntlet',
     '<:SwordBreaker:689507541201191047> Sword Breaker',
-    '<:TitanicHydra:689507540744142857> Titanic Hydra',
     '<:TrapClaw:689507541105115236> Trap Claw'
 ]
+ITEMS_WITH_GAUNTLET = np.concatenate([UPGRADED_ITEMS, [
+    '<:ThiefsGloves:689507540915978485> Thief\'s Gloves'
+]])
 
-CHAMPIONS_1 = ['Diana', 'Ivern', 'Kog\'Maw', 'Leona', 'Maokai', 'Nasus', 'Ornn', 'Renekton', 'Taliyah', 'Vayne', 'Vladimir', 'Warwick', 'Zyra']
-CHAMPIONS_2 = ['Braum', 'Jax', 'LeBlanc', 'Malzahar', 'Neeko', 'Rek\'Sai', 'Senna', 'Skarner', 'Syndra', 'Thresh', 'Varus', 'Volibear', 'Yasuo']
-CHAMPIONS_3 = ['Aatrox', 'Azir', 'Dr. Mundo', 'Ezreal', 'Karma', 'Kindred', 'Nautilus', 'Nocturne', 'Qiyana', 'Sion', 'Sivir', 'Soraka', 'Veigar']
-CHAMPIONS_4 = ['Annie', 'Ashe', 'Brand', 'Janna', 'Kha\'Zix', 'Lucian', 'Malphite', 'Olaf', 'Twitch', 'Yorick']
-CHAMPIONS_5 = ['Amumu', 'Master Yi', 'Nami', 'Singed', 'Taric', 'Zed']
+CHAMPIONS_1 = [
+    '<:Caitlyn:689552713398222848> Caitlyn',
+    '<:Fiora:689552713515925561> Fiora',
+    '<:Graves:689551684896030796> Graves',
+    '<:JarvanIV:689552713427452034> Jarvan IV',
+    '<:Khazix:689552713566257258> Kha\'Zix',
+    '<:Leona:689552713398222896> Leona',
+    '<:Malphite:689552713448816655> Malphite',
+    '<:Poppy:689551684266885122> Poppy',
+    '<:TwistedFate:689552713658531891> Twisted Fate',
+    '<:Xayah:689552713691955265> Xayah',
+    '<:Ziggs:689551684891836463> Ziggs',
+    '<:Zoe:689552713540698113> Zoe'
+]
+CHAMPIONS_2 = [
+    '<:Ahri:689552713390096391> Ahri',
+    '<:Annie:689552713331376315> Annie',
+    '<:Blitzcrank:689552713008283718> Blitzcrank',
+    '<:Darius:689552713494954080> Darius',
+    '<:Kaisa:689552713398354023> Kai\'Sa',
+    '<:Lucian:689552713616195587> Lucian',
+    '<:Mordekaiser:689552713176055843> Mordekaiser',
+    '<:Rakan:689552713654337618> Rakan',
+    '<:Shen:689552713620783123> Shen',
+    '<:Sona:689552713297559564> Sona',
+    '<:XinZhao:689552713650012219> Xin\'Zhao',
+    '<:Yasuo:689552713905864803> Yasuo'
+]
+CHAMPIONS_3 = [
+    '<:Ashe:689552713377513549> Ashe',
+    '<:Ezreal:689552713385508901> Ezreal',
+    '<:Jayce:689552713608069153> Jayce',
+    '<:Karma:689552713373188236> Karma',
+    '<:Kassadin:689552713591291975> Kassadin',
+    '<:Lux:689552713586966626> Lux',
+    '<:MasterYi:689552713603612786> Master Yi',
+    '<:Neeko:689552713565995020> Neeko',
+    '<:Rumble:689552713406742594> Rumble',
+    '<:Shaco:689552713465462810> Shaco',
+    '<:Syndra:689552713658531871> Syndra',
+    '<:Vi:689552713587228777> Vi'
+]
+CHAMPIONS_4 = [
+    '<:Chogath:689553142010216571> Cho\'Gath',
+    '<:Fizz:689553142735437985> Fizz',
+    '<:Irelia:689553142282846209> Irelia',
+    '<:Jhin:689553142836494347> Jhin',
+    '<:Jinx:689553142370533392> Jinx',
+    '<:Kayle:689553142106292320> Kayle',
+    '<:Soraka:689553143058530334> Soraka',
+    '<:Velkoz:689553142429253671> Vel\'Koz',
+    '<:Wukong:689553142400024608> Wukong'
+]
+CHAMPIONS_5 = [
+    '<:AurelionSol:689553284192534564> Aurelion Sol',
+    '<:Ekko:689553283978625053> Ekko',
+    '<:Gangplank:689553284654301245> Gangplank',
+    '<:Lulu:689553283735617692> Lulu',
+    '<:MissFortune:689553284347854859> Miss Fortune',
+    '<:Thresh:689553283991339069> Thresh'
+]
 
 CHAMPIONS_WITH_PRICE = np.concatenate([
     list(map(lambda el: '[1] ' + el, CHAMPIONS_1)),
@@ -207,7 +242,15 @@ CHAMPIONS_WITH_PRICE = np.concatenate([
     list(map(lambda el: '[5] ' + el, CHAMPIONS_5))
 ])
 
-IDS = list(map(lambda el: re.sub(r'[^a-z]', '', el.lower()), np.concatenate([
+ALL_CHAMPIONS = np.concatenate([
+    CHAMPIONS_1,
+    CHAMPIONS_2,
+    CHAMPIONS_3,
+    CHAMPIONS_4,
+    CHAMPIONS_5
+])
+
+IDS = list(map(lambda el: re.sub(r'(?:\<.*?\>|[^a-z])', '', el.lower()), np.concatenate([
     ['alfalfa', 'almorta', 'guisante', 'frijol', 'garbanzo', 'habas', 'ejote', 'lenteja', 'altramuz', 'cacahuetes', 'soja', 'arveja', 'mungo', 'almendra', 'anacardo', 'avellana', 'castaña', 'gevuina', 'nuece', 'piñone', 'pistacho', 'calabaza', 'girasol', 'pipas', 'aguacate', 'albaricoque', 'piña', 'arandano', 'banana', 'cereza', 'ciruela', 'coco', 'damasco', 'durazno', 'frambuesa', 'fresa', 'frutilla', 'guinda', 'granada', 'grosella', 'higo', 'kiwi', 'lima', 'limon', 'mandarina', 'mango', 'manzana', 'maracuya', 'melocoton', 'melon', 'membrillo', 'mora', 'naranja', 'nectarina', 'papaya', 'palta', 'pera', 'piña', 'platano', 'pomelo', 'sandia', 'toronja', 'uva', 'zarzamora', 'patata', 'arroz', 'quinoa', 'asno', 'buey', 'vaca', 'pollo', 'pato', 'cabra', 'oveja', 'poni', 'caballo', 'gallo', 'gallina', 'toro', 'pavo', 'perdiz', 'cerdo', 'codorniz', 'conejo', 'hipopotamo', 'elefante', 'rinoceronte', 'llama'],
     list(map(lambda el: el['name'], TFT_CLASSES)),
     BASIC_ITEMS,
@@ -237,7 +280,7 @@ def aux_tft_get_n_from_list(items, n, repeat = True):
 def aux_tft_get_n_champions_sorted_with_price(n, repeat = True):
     result = aux_tft_get_n_from_list(CHAMPIONS_WITH_PRICE, n, repeat)
     result.sort()
-    return result
+    return list(map(lambda el: re.sub(r'^\[.\] ', '', el), result))
 
 def aux_tft_create_list(items):
     return "\n" + "\n".join(map(lambda el: '- {0}'.format(el), items))
@@ -251,32 +294,31 @@ def tft_2_4_team_class():
     CLASS_2 = random.choice(
         list(
             filter(
-                lambda el: 2 in el['props'] and el['name'] != CLASS_4['name'] and el['type'] == CLASS_4['type'], 
+                lambda el: 2 in el['props'] and el['name'] != CLASS_4['name'],
                 TFT_CLASSES
             )
         )
     )
-    return 'Acaba la partida con 4 unidades del {0} "{1}" y 2 unidades del {0} "{2}"'.format(CLASS_4['type'], CLASS_4['name'], CLASS_2['name'])
+    return 'Acaba la partida con 4 unidades {1} y 2 unidades {2}'.format(CLASS_4['name'], CLASS_2['name'])
 
 def tft_3_3_team_class():
     CLASS_A = random.choice(list(filter(lambda el: 3 in el['props'], TFT_CLASSES)))
     CLASS_B = random.choice(
         list(
             filter(
-                lambda el: 3 in el['props'] and el['name'] != CLASS_A['name'] and el['type'] == CLASS_A['type'], 
+                lambda el: 3 in el['props'] and el['name'] != CLASS_A['name'], 
                 TFT_CLASSES
             )
         )
     )
-    return 'Acaba la partida con 3 unidades del {0} "{1}" y 3 unidades del {0} "{2}"'.format(CLASS_A['type'], CLASS_A['name'], CLASS_B['name'])
+    return 'Acaba la partida con 3 unidades {1} y 3 unidades {2}'.format(CLASS_A['name'], CLASS_B['name'])
 
 def tft_2_out_of_4_items_same_character():
     items = aux_tft_create_list(aux_tft_get_n_from_list(UPGRADED_ITEMS, 4))
     return 'Acaba la partida con un personaje equipado con 2 de los siguientes objetos, a tu elección: {0}'.format(items)
 
 def tft_2_characters_same_item():
-    itemsWithGauntlet = np.concatenate([UPGRADED_ITEMS, ['Thief\'s Gloves']])
-    items = aux_tft_create_list(aux_tft_get_n_from_list(itemsWithGauntlet, 6, False))
+    items = aux_tft_create_list(aux_tft_get_n_from_list(ITEMS_WITH_GAUNTLET, 6, False))
     return 'Acaba la partida con dos personajes diferentes equipados con el mismo objeto, dentro de los siguientes: {0}'.format(items)
 
 def tft_3_out_of_10_items():
@@ -303,7 +345,7 @@ def tft_2_out_of_6_characters_with_item():
     characters = aux_tft_get_n_champions_sorted_with_price(6)
     charactersWithItems = []
     for character in characters:
-        charactersWithItems.append('{0} equipado con el objeto "{1}"'.format(character, random.choice(UPGRADED_ITEMS)))
+        charactersWithItems.append('{0} equipado con {1}'.format(character, random.choice(UPGRADED_ITEMS)))
     characters = aux_tft_create_list(charactersWithItems)
     return 'Acaba la partida con dos de los siguientes personajes: {0}'.format(characters)
 
@@ -317,7 +359,7 @@ def tft_3_stars():
         '[3] ' + random.choice(CHAMPIONS_3),    
         '[4] ' + random.choice(CHAMPIONS_4),    
     ])
-    return 'Acaba con un personaje de 3 estrellas (***) a tu elección, de entre los siguientes: {0}'.format(characters)
+    return 'Acaba con un personaje de :star::star::star: a tu elección, de entre los siguientes: {0}'.format(characters)
 
 def tft_5_champions():
     characters = aux_tft_create_list(aux_tft_get_n_champions_sorted_with_price(15, False))
@@ -330,8 +372,8 @@ def tft_3_items_2_champions():
 
 def tft_team_leader():
     defeatConditions = aux_tft_create_list([
-        'El personaje elegido aparece en la tienda y no lo compras (a menos que lo tengas a ***).', 
-        'El personaje elegido aparece en un caroussel y, sin que otro personaje te lo robe, decides no adquirirlo (a menos que lo tengas a ***).',
+        'El personaje elegido aparece en la tienda y no lo compras (a menos que lo tengas a :star::star::star:).', 
+        'El personaje elegido aparece en un caroussel y, sin que otro personaje te lo robe, decides no adquirirlo (a menos que lo tengas a :star::star::star:).',
         'Equipas un objeto a un personaje que no sea el elegido antes de que el elegido posea el máximo de objetos posible.', 
         'Libras una sola batalla sin el elegido (una vez ha sido adquirido).',
         'No llegas a obtener al elegido en toda la partida.', 
@@ -344,7 +386,7 @@ def tft_fast_campions():
     characters = aux_tft_create_list(aux_tft_get_n_champions_sorted_with_price(5, False))
     return 'Debes comprar los 3 primeros personajes que encuentres en la tienda dentro de la siguiente lista: {0}.\nPierdes si dejas pasar uno solo de ellos, si no los incluyes en todos los combates desde la adquisición o si acabas la partida sin haber encontrado 3 de ellos.'.format(characters)
 
-def tft_fast_golem_kill():
+def tft_fast_krugs_kill():
     eligibleCharacters = np.concatenate([
         list(map(lambda el: '[1] ' + el, CHAMPIONS_1)),
         list(map(lambda el: '[2] ' + el, CHAMPIONS_2)),
@@ -353,13 +395,13 @@ def tft_fast_golem_kill():
     ])
     characters = aux_tft_get_n_from_list(eligibleCharacters, 12, False)
     characters.sort()
+    characters = list(map(lambda el: re.sub(r'^\[.\] ', '', el), characters))
     characters = aux_tft_create_list(characters)
-    return 'Derrota a los golems **únicamente con 4 personajes**. Estos personajes podrán ser elegidos dentro de las siguientes opciones: {0}'.format(characters)
+    return 'Derrota a los <:Krugs:689554748126396440> Krugs **únicamente con 4 personajes**. Estos personajes podrán ser elegidos dentro de las siguientes opciones: {0}'.format(characters)
 
 def tft_1_champion_1_class_1_item():
-    character = random.choice(CHAMPIONS_WITH_PRICE)
-    itemsWithGauntlet = np.concatenate([UPGRADED_ITEMS, ['Thief\'s Gloves']])
-    item = random.choice(itemsWithGauntlet)
+    character = random.choice(ALL_CHAMPIONS)
+    item = random.choice(ITEMS_WITH_GAUNTLET)
     chosenclass = random.choice(TFT_CLASSES)
     return 'Adquiere lo más rápido posible un {0} equipado con un {1}. Adicionalmente, activa lo más rápido posible la {2} {3}. Libra el resto de batallas con ellos. Deberás acabar la partida con todos los requisitos cumplidos.'.format(character, item, chosenclass['type'], chosenclass['name'])
 
@@ -381,7 +423,7 @@ def generate_quest():
         tft_3_items_2_champions,
         tft_team_leader,
         tft_fast_campions,
-        tft_fast_golem_kill,
+        tft_fast_krugs_kill,
         tft_1_champion_1_class_1_item
     ])()
 
