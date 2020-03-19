@@ -118,17 +118,17 @@ Lista de pasos para jugar este modo:
     @classmethod
     def tftHiddenQuestCommands(cls):
         return '''Lista de comandos de **TFT Hiden Quests**:
-    `&tft hidden_quest help`: Te enseño cómo funciona **TFT Hidden Quests** en detalle.
-    `&tft hidden_quest commands`: Te enseño este mismo mensaje.
-    `&tft hidden_quest create [numero_rerolls (por defecto 3)] [mostrar_misiones_descartadas (y/n) (por defecto y)]`: Crea una nueva sala de TFT Hidden Quest y muestra su ID
+    `&tft hidden_quest help`: Te enseño cómo funciona **TFT Hidden Quests** en detalle. Atajos: `&tft hq h`
+    `&tft hidden_quest commands`: Te enseño este mismo mensaje. Atajos: `&tft hq cmd`
+    `&tft hidden_quest create [numero_rerolls (por defecto 3)] [mostrar_misiones_descartadas (y/n) (por defecto y)]`: Crea una nueva sala de TFT Hidden Quest y muestra su ID. Atajos: `&tft hq c`
     `&tft hidden_quest destroy`: Si eres el creador de una sala, puedes usar este comando para destruir la sala en la que estás.
-    `&tft hidden_quest join <id_sala>`: Te unes a la sala _id_sala_. Te envío por privado tu misión secreta.
-    `&tft hidden_quest leave`: Te vas de la sala en la que estás.
-    `&tft hidden_quest reroll`: Gastas un reroll y te asigno una misión secreta nueva.
-    `&tft hidden_quest ready`: Aceptas tu misión secreta y marcas que estás listo para jugar a TFT.
-    `&tft hidden_quest start`: El creador podrá utilizar este comando para comenzar la partida de TFT cuando todos hayan marcado que están listos.
-    `&tft hidden_quest end <posición> <he_completado_mi_mision (y/n)>`: Cuando un jugador acaba su partida, deberá poner este comando identificando en que _posición_ ha quedado y si ha completado su misión (**_y_**) o no (**_n_**).
-    `&tft hidden_quest status`: Muestra el estado de la sala en la que estás.
+    `&tft hidden_quest join <id_sala>`: Te unes a la sala _id_sala_. Te envío por privado tu misión secreta. Atajos: `&tft hq j`
+    `&tft hidden_quest leave`: Te vas de la sala en la que estás. Atajos: `&tft hq lv`
+    `&tft hidden_quest reroll`: Gastas un reroll y te asigno una misión secreta nueva. Atajos: `&tft hq rr`, `&tft hq rrl`
+    `&tft hidden_quest ready`: Aceptas tu misión secreta y marcas que estás listo para jugar a TFT. Atajos: `&tft hq rd`, `&tft hq rdy`
+    `&tft hidden_quest start`: El creador podrá utilizar este comando para comenzar la partida de TFT cuando todos hayan marcado que están listos. Atajos: `&tft hq sta`, `&tft hq str`
+    `&tft hidden_quest end <posición> <he_completado_mi_mision (y/n)>`: Cuando un jugador acaba su partida, deberá poner este comando identificando en que _posición_ ha quedado y si ha completado su misión (**_y_**) o no (**_n_**). Atajos: `&tft hq e`
+    `&tft hidden_quest status`: Muestra el estado de la sala en la que estás. Atajos: `&tft hq s`
 '''
 
 def produce():

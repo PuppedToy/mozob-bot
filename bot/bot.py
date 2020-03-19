@@ -14,11 +14,43 @@ def on_ready():
     print('Logged in as: {0} - {1}'.format(client.user.name, client.user.id))
     print('-'*20)
 
+shortcuts = [
+    ['tft hq', 'tft hidden_quest', True],
+    ['tft hidden_quest h', 'tft hidden_quest help', False],
+    ['tft hidden_quest cmd', 'tft hidden_quest commands', False],
+    ['tft hidden_quest c', 'tft hidden_quest create', False],
+    ['tft hidden_quest c', 'tft hidden_quest create', True],
+    ['tft hidden_quest j', 'tft hidden_quest join', True],
+    ['tft hidden_quest lv', 'tft hidden_quest leave', True],
+    ['tft hidden_quest rrl', 'tft hidden_quest reroll', False],
+    ['tft hidden_quest rr', 'tft hidden_quest reroll', False],
+    ['tft hidden_quest rdy', 'tft hidden_quest ready', False],
+    ['tft hidden_quest rd', 'tft hidden_quest ready', False],
+    ['tft hidden_quest re', 'tft hidden_quest ready', False],
+    ['tft hidden_quest sta', 'tft hidden_quest start', False],
+    ['tft hidden_quest str', 'tft hidden_quest start', False],
+    ['tft hidden_quest s', 'tft hidden_quest status', False],
+    ['tft hidden_quest e', 'tft hidden_quest end', True]
+]
+
+def applyShortcuts(command):
+    result = command
+    for shortcut in shortcuts:
+        fullShortcut = '&' + shortcut[0]
+        fullReplacement = '&' + shortcut[1]
+        hasExtraParameters = shortcut[2]
+        
+        if not hasExtraParameters and result == fullShortcut:
+            result = fullReplacement
+        elif hasExtraParameters:
+            result = result.replace(fullShortcut + ' ', fullReplacement + ' ')
+    return result
 
 @client.event
 @asyncio.coroutine
 def on_message(message):
-    command = message.content.lower().replace('&tft hq ', '&tft hidden_quest ')
+    command = applyShortcuts(message.content.lower())
+
     if message.author == client.user:
         return
     elif command == '&':
