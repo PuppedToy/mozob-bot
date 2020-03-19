@@ -299,7 +299,7 @@ def tft_2_4_team_class():
             )
         )
     )
-    return 'Acaba la partida con 4 unidades {1} y 2 unidades {2}'.format(CLASS_4['name'], CLASS_2['name'])
+    return 'Acaba la partida con 4 unidades {0} y 2 unidades {1}'.format(CLASS_4['name'], CLASS_2['name'])
 
 def tft_3_3_team_class():
     CLASS_A = random.choice(list(filter(lambda el: 3 in el['props'], TFT_CLASSES)))
@@ -311,18 +311,18 @@ def tft_3_3_team_class():
             )
         )
     )
-    return 'Acaba la partida con 3 unidades {1} y 3 unidades {2}'.format(CLASS_A['name'], CLASS_B['name'])
+    return 'Acaba la partida con 3 unidades {0} y 3 unidades {1}'.format(CLASS_A['name'], CLASS_B['name'])
 
 def tft_2_out_of_4_items_same_character():
-    items = aux_tft_create_list(aux_tft_get_n_from_list(UPGRADED_ITEMS, 4))
-    return 'Acaba la partida con un personaje equipado con 2 de los siguientes objetos, a tu elección: {0}'.format(items)
+    items = aux_tft_create_list(aux_tft_get_n_from_list(UPGRADED_ITEMS, 2))
+    return 'Acaba la partida con un personaje equipado con {0} y {1}'.format(items[0], items[1])
 
 def tft_2_characters_same_item():
-    items = aux_tft_create_list(aux_tft_get_n_from_list(ITEMS_WITH_GAUNTLET, 6, False))
+    items = aux_tft_create_list(aux_tft_get_n_from_list(ITEMS_WITH_GAUNTLET, 3, False))
     return 'Acaba la partida con dos personajes diferentes equipados con el mismo objeto, dentro de los siguientes: {0}'.format(items)
 
-def tft_3_out_of_10_items():
-    items = aux_tft_create_list(aux_tft_get_n_from_list(UPGRADED_ITEMS, 8))
+def tft_3_items():
+    items = aux_tft_create_list(aux_tft_get_n_from_list(UPGRADED_ITEMS, 6))
     return 'Acaba la partida con un personaje equipado con 3 de los siguientes objetos, a tu elección: {0}'.format(items)
 
 def tft_forbidden_champions():
@@ -404,6 +404,24 @@ def tft_1_champion_1_class_1_item():
     chosenclass = random.choice(TFT_CLASSES)
     return 'Adquiere lo más rápido posible un {0} equipado con un {1}. Adicionalmente, activa lo más rápido posible la {2} {3}. Libra el resto de batallas con ellos. Deberás acabar la partida con todos los requisitos cumplidos.'.format(character, item, chosenclass['type'], chosenclass['name'])
 
+def tft_2_classes_2_items():
+    classes = aux_tft_get_n_from_list(TFT_CLASSES_NAMES, 2, False)
+    items = aux_tft_get_n_from_list(UPGRADED_ITEMS, 2)
+    return 'Acaba la partida con las clases/orígenes {0} y {1} activadas y un personaje {2} equipado con {3} y {4}.'.format(classes[0], classes[1], random.choice(classes), items[0], items[1])
+
+def tft_1_class_3_items():
+    chosenclass = random.choice(TFT_CLASSES_NAMES)
+    items = aux_tft_get_n_from_list(UPGRADED_ITEMS, 3)
+    return 'Adquiere un personaje {0} nada más lo veas en la tienda. Lucha todas las batallas con un personaje {0} (no tiene por qué ser el mismo). A partir de que derrotes a los <:Raptor:689554748659335273> Raptors, lucha todas las batallas con un personaje {0} equipado con {1}, {2} y {3}.'.format(chosenclass, items[0], items[1], items[2])
+
+def tft_15_item_sets():
+    items = []
+    for i in range(10):
+        nextItems = aux_tft_get_n_from_list(UPGRADED_ITEMS, 3)
+        items.append('{0}, {1} y {2}'.format(nextItems[0], nextItems[1], nextItems[2]))
+    items = aux_tft_create_list(items)
+    return 'Elige dos sets de objetos de la lista. Acaba la partida con dos personajes, cada uno equipado con uno de los sets elegidos. Los sets disponibles son: {0}'.format(items)
+
 def generate_quest():
     return random.choice([
         tft_6_team_class,
@@ -411,7 +429,7 @@ def generate_quest():
         tft_3_3_team_class,
         tft_2_out_of_4_items_same_character,
         tft_2_characters_same_item,
-        tft_3_out_of_10_items,
+        tft_3_items,
         tft_forbidden_champions,
         tft_forbidden_items,
         tft_forbidden_classes,
@@ -423,7 +441,10 @@ def generate_quest():
         tft_team_leader,
         tft_fast_campions,
         tft_fast_krugs_kill,
-        tft_1_champion_1_class_1_item
+        tft_1_champion_1_class_1_item,
+        tft_2_classes_2_items,
+        tft_1_class_3_items,
+        tft_15_item_sets
     ])()
 
 tftRooms = {}
