@@ -280,7 +280,7 @@ def aux_tft_get_n_from_list(items, n, repeat = True):
 def aux_tft_get_n_champions_sorted_with_price(n, repeat = True):
     result = aux_tft_get_n_from_list(CHAMPIONS_WITH_PRICE, n, repeat)
     result.sort()
-    return list(map(lambda el: re.sub(r'^\[.\] ', '', el), result))
+    return result
 
 def aux_tft_create_list(items):
     return "\n" + "\n".join(map(lambda el: '- {0}'.format(el), items))
@@ -350,15 +350,15 @@ def tft_2_out_of_6_characters_with_item():
     return 'Acaba la partida con dos de los siguientes personajes: {0}'.format(characters)
 
 def tft_3_stars():
-    characters = aux_tft_create_list([
-        '[1] ' + random.choice(CHAMPIONS_1),    
-        '[1] ' + random.choice(CHAMPIONS_1),    
-        '[2] ' + random.choice(CHAMPIONS_2),    
-        '[2] ' + random.choice(CHAMPIONS_2),    
-        '[3] ' + random.choice(CHAMPIONS_3),    
-        '[3] ' + random.choice(CHAMPIONS_3),    
-        '[4] ' + random.choice(CHAMPIONS_4),    
+    eligibleCharacters = np.concatenate([
+        list(map(lambda el: '[1] ' + el, CHAMPIONS_1)),
+        list(map(lambda el: '[2] ' + el, CHAMPIONS_2)),
+        list(map(lambda el: '[3] ' + el, CHAMPIONS_3)),
+        ['[4] ' + random.choice(CHAMPIONS_4)]
     ])
+    characters = aux_tft_get_n_from_list(eligibleCharacters, 12, False)
+    characters.sort()
+    characters = aux_tft_create_list(characters)
     return 'Acaba con un personaje de :star::star::star: a tu elección, de entre los siguientes: {0}'.format(characters)
 
 def tft_5_champions():
@@ -380,7 +380,7 @@ def tft_team_leader():
         'Libras una sola batalla sin colocar los personajes de forma simétrica, donde el eje de simetría contenga al elegido (esto solo aplica desde que se obtiene al elegido).',
     ])
     characters = aux_tft_create_list(aux_tft_get_n_champions_sorted_with_price(3, False))
-    return 'Elige uno de los siguientes 3 personajes para hacerlo el líder de tu equipo: {0}\nTienes estas condiciones de derrota: {1}.\nAclaración: si decides no adquirir un personaje de los propuestos la primera vez que tienes la posibilidad, todavía optas a obtener el resto de ellos.'.format(characters, defeatConditions)
+    return 'Elige uno de los siguientes 3 personajes para hacerlo el líder de tu equipo: {0}\nTienes estas condiciones de derrota: {1}.\nAclaración: si decides no adquirir un personaje de los propuestos la primera vez que tienes la posibilidad, todavía optas a obtener el resto de ellos y adquierir un personaje de la lista no implica que ese deba ser el líder definitivo hasta que hayas descartado al resto.'.format(characters, defeatConditions)
 
 def tft_fast_campions():
     characters = aux_tft_create_list(aux_tft_get_n_champions_sorted_with_price(5, False))
@@ -395,7 +395,6 @@ def tft_fast_krugs_kill():
     ])
     characters = aux_tft_get_n_from_list(eligibleCharacters, 12, False)
     characters.sort()
-    characters = list(map(lambda el: re.sub(r'^\[.\] ', '', el), characters))
     characters = aux_tft_create_list(characters)
     return 'Derrota a los <:Krugs:689554748126396440> Krugs **únicamente con 4 personajes**. Estos personajes podrán ser elegidos dentro de las siguientes opciones: {0}'.format(characters)
 
