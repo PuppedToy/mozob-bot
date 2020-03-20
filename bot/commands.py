@@ -128,11 +128,23 @@ Lista de pasos para jugar este modo:
         invisibleFriends.append(invisibleFriend)
 
     @classmethod
-    def joinInvisibleFriend(cls, messageId, user):
+    def searchInvisibleFriend(cls, messageId):
         for invisibleFriend in invisibleFriends:
             if invisibleFriend.message.id == messageId:
-                invisibleFriend.addUser(user)
-                invisibleFriend.refreshStatus()
+                return invisibleFriend
+        return None
+
+    @classmethod
+    def joinInvisibleFriend(cls, messageId, user):
+        invisibleFriend = Command.searchInvisibleFriend(messageId)
+        if invisibleFriend:
+            invisibleFriend.addUser(user)
+
+    @classmethod
+    def leaveInvisibleFriend(cls, messageId, user):
+        invisibleFriend = Command.searchInvisibleFriend(messageId)
+        if invisibleFriend:
+            invisibleFriend.removeUser(user)
 
 def produce():
     for owner, factory in factories.items():

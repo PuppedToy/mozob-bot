@@ -48,6 +48,12 @@ def applyShortcuts(command):
 
 @client.event
 @asyncio.coroutine
+def on_reaction_remove(reaction, user):
+    if(user != client.user and reaction.emoji == '🎁'):
+        Command.leaveInvisibleFriend(reaction.message.id, user)
+
+@client.event
+@asyncio.coroutine
 def on_reaction_add(reaction, user):
     if(user != client.user and reaction.emoji == '🎁'):
         Command.joinInvisibleFriend(reaction.message.id, user)
