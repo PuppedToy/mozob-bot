@@ -1,6 +1,7 @@
 import requests
 import threading
 import random
+import asyncio
 
 TFT_CLASSES = ['Inferno', 'Light', 'Poison', 'Crystal', 'Desert', 'Ocean', 'Shadow', 'Electric', 'Lunar', 'Mountain', 'Woodland', 'Cloud', 'Glacial', 'Steel', 'Alchemist', 'Avatar', 'Ranger', 'Mage', 'Mystic', 'Soulbound', 'Summoner', 'Assasain', 'Berserker', 'Predator', 'Warden', 'Blademaster', 'Druid']
 
@@ -9,6 +10,7 @@ from bot.invisibleFriend import InvisibleFriend
 connection = Connection()
 
 PRODUCTION_INTERVAL = 60*60 # 1 product each hour
+INVISIBLE_FRIEND_AUTODESTRUCTION_TIME = 60*60*4 # cancel invisible friend after 4 hours
 # PRODUCTION_INTERVAL = 10 # 1 product each 10s
 
 factories = connection.getFactories()
@@ -123,9 +125,17 @@ Lista de pasos para jugar este modo:
 '''
 
     @classmethod
+    async def invisibleFriendAutodestruction(cls, invisibleFriend):
+        await asyncio.sleep(INVISIBLE_FRIEND_AUTODESTRUCTION_TIME)
+        if invisibleFriend in invisibleFriends:
+            invisibleFriend.cancel()
+            invisibleFriends.remove(invisibleFriend)
+
+    @classmethod
     def invisibleFriend(cls, message):
         invisibleFriend = InvisibleFriend(message)
         invisibleFriends.append(invisibleFriend)
+        asyncio.ensure_future(Command.invisibleFriendAutodestruction(invisibleFriend))
 
     @classmethod
     def searchInvisibleFriend(cls, messageId):
@@ -135,10 +145,31 @@ Lista de pasos para jugar este modo:
         return None
 
     @classmethod
+    def searchInvisibleFriendByUser(cls, userId):
+        for invisibleFriend in invisibleFriends:
+            if invisibleFriend.started and not invisibleFriend.revealed and userId in invisibleFriend.users:
+                return invisibleFriend
+        return None
+
+    @classmethod
     def joinInvisibleFriend(cls, messageId, user):
         invisibleFriend = Command.searchInvisibleFriend(messageId)
         if invisibleFriend:
             invisibleFriend.addUser(user)
+
+    @classmethod
+    def startInvisibleFriend(cls, messageId, user):
+        invisibleFriend = Command.searchInvisibleFriend(messageId)
+        if invisibleFriend:
+            invisibleFriend.start(user)
+
+    @classmethod
+    def givePresentInvisibleFriend(cls, message):
+        invisibleFriend = Command.searchInvisibleFriendByUser(message.author.id)
+        if invisibleFriend:
+            invisibleFriend.givePresent(message.author, message.content)
+            if invisibleFriend.revealed:
+                invisibleFriends.remove(invisibleFriend)
 
     @classmethod
     def leaveInvisibleFriend(cls, messageId, user):

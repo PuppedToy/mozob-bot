@@ -57,14 +57,17 @@ def on_reaction_remove(reaction, user):
 def on_reaction_add(reaction, user):
     if(user != client.user and reaction.emoji == '🎁'):
         Command.joinInvisibleFriend(reaction.message.id, user)
+    if(user != client.user and reaction.emoji == '▶️'):
+        Command.startInvisibleFriend(reaction.message.id, user)
 
 @client.event
 @asyncio.coroutine
 def on_message(message):
     command = applyShortcuts(message.content.lower())
-
     if message.author == client.user:
         return
+    elif isinstance(message.channel, discord.DMChannel):
+        Command.givePresentInvisibleFriend(message)
     elif command == '&':
         yield from message.channel.send('<@{0}>, No command has been passed.'.format(message.author.id))
     elif command == '&help':
