@@ -5,6 +5,7 @@ import random
 TFT_CLASSES = ['Inferno', 'Light', 'Poison', 'Crystal', 'Desert', 'Ocean', 'Shadow', 'Electric', 'Lunar', 'Mountain', 'Woodland', 'Cloud', 'Glacial', 'Steel', 'Alchemist', 'Avatar', 'Ranger', 'Mage', 'Mystic', 'Soulbound', 'Summoner', 'Assasain', 'Berserker', 'Predator', 'Warden', 'Blademaster', 'Druid']
 
 from bot.queries import Connection
+from bot.invisibleFriend import InvisibleFriend
 connection = Connection()
 
 PRODUCTION_INTERVAL = 60*60 # 1 product each hour
@@ -119,6 +120,11 @@ Lista de pasos para jugar este modo:
     `&tft hidden_quest end <posición> <he_completado_mi_mision (y/n)>`: Cuando un jugador acaba su partida, deberá poner este comando identificando en que _posición_ ha quedado y si ha completado su misión (**_y_**) o no (**_n_**). Atajos: `&tft hq e`
     `&tft hidden_quest status`: Muestra el estado de la sala en la que estás. Atajos: `&tft hq s`
 '''
+
+    @classmethod
+    def invisibleFriend(cls, message):
+        invF = InvisibleFriend(message)
+
 
 def produce():
     for owner, factory in factories.items():

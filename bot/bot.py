@@ -78,7 +78,10 @@ Por ejemplo: `&factory create mi fabrica de tomates&tomate`
 
     elif command == '&inventory':
         yield from message.channel.send(Command.inventory(message.author.id))
-    
+
+    elif command == '&invisible_friend':
+        yield from message.channel.send(Command.invisibleFriend(message))
+
     elif command == '&alaputa':
         yield from message.channel.send(Command.alaputa())
 
