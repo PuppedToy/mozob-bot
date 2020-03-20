@@ -13,6 +13,7 @@ PRODUCTION_INTERVAL = 60*60 # 1 product each hour
 
 factories = connection.getFactories()
 inventories = connection.getInventories()
+invisibleFriends = []
 
 class Command:
 
@@ -123,8 +124,15 @@ Lista de pasos para jugar este modo:
 
     @classmethod
     def invisibleFriend(cls, message):
-        invF = InvisibleFriend(message)
+        invisibleFriend = InvisibleFriend(message)
+        invisibleFriends.append(invisibleFriend)
 
+    @classmethod
+    def joinInvisibleFriend(cls, messageId, user):
+        for invisibleFriend in invisibleFriends:
+            if invisibleFriend.message.id == messageId:
+                invisibleFriend.addUser(user)
+                invisibleFriend.refreshStatus()
 
 def produce():
     for owner, factory in factories.items():

@@ -48,6 +48,12 @@ def applyShortcuts(command):
 
 @client.event
 @asyncio.coroutine
+def on_reaction_add(reaction, user):
+    if(user != client.user and reaction.emoji == '🎁'):
+        Command.joinInvisibleFriend(reaction.message.id, user)
+
+@client.event
+@asyncio.coroutine
 def on_message(message):
     command = applyShortcuts(message.content.lower())
 
@@ -80,7 +86,7 @@ Por ejemplo: `&factory create mi fabrica de tomates&tomate`
         yield from message.channel.send(Command.inventory(message.author.id))
 
     elif command == '&invisible_friend':
-        yield from message.channel.send(Command.invisibleFriend(message))
+        Command.invisibleFriend(message)
 
     elif command == '&alaputa':
         yield from message.channel.send(Command.alaputa())

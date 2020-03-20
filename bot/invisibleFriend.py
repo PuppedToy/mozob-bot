@@ -27,8 +27,11 @@ class InvisibleFriend:
 		if not self in invisibleFriends[user.id]:
 			invisibleFriends[user.id].append(self)
 
+	def refreshStatus(self):
+		asyncio.ensure_future(self.message.edit(content = self.buildStatus()))
+
 	def buildStatus(self):
-		message = "**Sala de amigo invisible - Pulsa 🎁 para unirte y 🚪 para irte**\n```\nUsuarios dentro de la sala:\n\n"
+		message = "**Sala de amigo invisible - Reacciona con 🎁 para unirte y quita la reacción para irte**\n```\nUsuarios dentro de la sala:\n\n"
 		for userId, user in self.users.items():
 			if user.sender is None:
 				message += "{0} está esperando dentro... ⏱\n".format(user.user.name)
@@ -42,4 +45,3 @@ class InvisibleFriend:
 	async def createInitialMessage(self):
 		self.message = await self.channel.send(self.buildStatus())
 		await self.message.add_reaction('🎁')
-		await self.message.add_reaction('🚪')
