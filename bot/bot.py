@@ -136,10 +136,6 @@ Por ejemplo: `&factory create mi fabrica de tomates&tomate`
         if response is not None:
             yield from message.channel.send('{0}'.format(response))
 
-    elif command.startswith('&leet'):
-        response = Command.leet_speak(command.replace('&leet', ''))
-        yield from message.channel.send('{0}'.format(response))
-
 # Set up the base bot
 class DiscordBot(object):
     def __init__(self):
