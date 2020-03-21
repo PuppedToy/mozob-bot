@@ -7,6 +7,7 @@ class RusseRoulette:
 		self.channel = channel
 		self.size = size
 		self.history = []
+		self.historyId = 0
 		if bullets <= size:
 			self.bullets = bullets
 		else:
@@ -18,6 +19,12 @@ class RusseRoulette:
 			self.state.append(False)
 		random.shuffle(self.state)
 		asyncio.ensure_future(self.createInitialMessage())
+
+	def log(self, message):
+		self.history.append('#{0} {1}'.format(self.historyId, message))
+		self.historyId += 1
+		if len(self.history) > 25:
+			self.history.pop(0)
 
 	def refreshStatus(self):
 		if self.message is not None:
@@ -32,7 +39,7 @@ class RusseRoulette:
 
 	def cancel(self):
 		self.bullets = 0
-		self.history.append('La ruleta rusa ha sido cancelada.')
+		self.log('La ruleta rusa ha sido cancelada.')
 		self.refreshStatus()
 
 	def shoot(self, user):
@@ -40,11 +47,11 @@ class RusseRoulette:
 		self.size -= 1
 		if dead:
 			self.bullets -= 1
-			self.history.append("☠️ ¡{0} ha muerto!".format(user.name))
+			self.log("☠️ ¡{0} ha muerto!".format(user.name))
 		else:
-			self.history.append("✅ {0} ha sobrevivido.".format(user.name))
+			self.log("✅ {0} ha sobrevivido.".format(user.name))
 		if self.bullets == 0:
-			self.history.append("¡Ya no quedan balas en la pistola!")
+			self.log("¡Ya no quedan balas en la pistola!")
 		self.refreshStatus()
 
 	async def createInitialMessage(self):
