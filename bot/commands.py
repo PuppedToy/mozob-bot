@@ -7,15 +7,18 @@ TFT_CLASSES = ['Inferno', 'Light', 'Poison', 'Crystal', 'Desert', 'Ocean', 'Shad
 
 from bot.queries import Connection
 from bot.invisibleFriend import InvisibleFriend
+from bot.russeRoulette import RusseRoulette
 connection = Connection()
 
 PRODUCTION_INTERVAL = 60*60 # 1 product each hour
 INVISIBLE_FRIEND_AUTODESTRUCTION_TIME = 60*60*4 # cancel invisible friend after 4 hours
+RUSSE_ROULETTE_AUTODESTRUCTION_TIME = 60*60*4 # cancel russe roulettes after 4 hours
 # PRODUCTION_INTERVAL = 10 # 1 product each 10s
 
 factories = connection.getFactories()
 inventories = connection.getInventories()
 invisibleFriends = []
+russeRoulettes = []
 
 class Command:
 
@@ -32,6 +35,8 @@ class Command:
     `&factory delete`: Si tienes una fábrica, LA DESTRUYES PARA SIEMPRE.
     `&factory list`: Muestra la lista de fábricas existentes.
     `&inventory`: Muestra tu inventario
+    `&invisible_friend`: Crea una sala de amigo invisible.
+    `&russe_roulette [capacidad_arma] [numero_balas]`: Crea una sala de ruleta rusa. Por defecto, se asume un arma con 6 huecos y 1 bala.
     `&tft random_classes`: Genera dos clases (clases/orígenes) aleatorios para jugar tu próximo TFT
     `&tft hidden_quest help`: Muestra la ayuda de la modalidad de **TFT Hidden Quest**
     `&tft hidden_quest commands`: Muestra todos los comandos de **TFT Hidden Quest**
@@ -132,6 +137,13 @@ Lista de pasos para jugar este modo:
             invisibleFriends.remove(invisibleFriend)
 
     @classmethod
+    async def russeRouletteAutodestruction(cls, russeRoulette):
+        await asyncio.sleep(RUSSE_ROULETTE_AUTODESTRUCTION_TIME)
+        if russeRoulette in russeRoulettes:
+            russeRoulette.cancel()
+            russeRoulettes.remove(russeRoulette)
+
+    @classmethod
     def invisibleFriend(cls, message):
         invisibleFriend = InvisibleFriend(message)
         invisibleFriends.append(invisibleFriend)
@@ -176,6 +188,27 @@ Lista de pasos para jugar este modo:
         invisibleFriend = Command.searchInvisibleFriend(messageId)
         if invisibleFriend:
             invisibleFriend.removeUser(user)
+
+    @classmethod
+    def russeRoulette(cls, channel, size, bullets):
+        russeRoulette = RusseRoulette(channel, size, bullets)
+        russeRoulettes.append(russeRoulette)
+        asyncio.ensure_future(Command.russeRouletteAutodestruction(russeRoulette))
+
+    @classmethod
+    def findRusseRoulette(cls, messageId):
+        for russeRoulette in russeRoulettes:
+            if russeRoulette.bullets > 0 and russeRoulette.message.id == messageId:
+                return russeRoulette
+        return None
+
+    @classmethod
+    def shootRusseRoulette(cls, messageId, user):
+        russeRoulette = Command.findRusseRoulette(messageId)
+        if russeRoulette is not None:
+            russeRoulette.shoot(user)
+            if russeRoulette.bullets == 0:
+                russeRoulettes.remove(russeRoulette)
 
 def produce():
     for owner, factory in factories.items():

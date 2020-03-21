@@ -49,16 +49,24 @@ def applyShortcuts(command):
 @client.event
 @asyncio.coroutine
 def on_reaction_remove(reaction, user):
-    if(user != client.user and reaction.emoji == '🎁'):
+    if user == client.user:
+        return
+    if reaction.emoji == '🎁':
         Command.leaveInvisibleFriend(reaction.message.id, user)
+    if reaction.emoji == '🔫':
+        Command.shootRusseRoulette(reaction.message.id, user)
 
 @client.event
 @asyncio.coroutine
 def on_reaction_add(reaction, user):
-    if(user != client.user and reaction.emoji == '🎁'):
+    if user == client.user:
+        return
+    if reaction.emoji == '🎁':
         Command.joinInvisibleFriend(reaction.message.id, user)
-    if(user != client.user and reaction.emoji == '▶️'):
+    if reaction.emoji == '▶️':
         Command.startInvisibleFriend(reaction.message.id, user)
+    if reaction.emoji == '🔫':
+        Command.shootRusseRoulette(reaction.message.id, user)
 
 @client.event
 @asyncio.coroutine
@@ -96,6 +104,24 @@ Por ejemplo: `&factory create mi fabrica de tomates&tomate`
 
     elif command == '&invisible_friend':
         Command.invisibleFriend(message)
+
+    elif command.startswith('&russe_roulette'):
+        parts = command.split(' ')
+        size = 6
+        bullets = 1
+        if len(parts) >= 2:
+            try:
+                size = int(parts[1])
+            except:
+                yield from message.channel.send('"{0}" no es un número válido para la capacidad de la pistola.'.format(parts[1]))
+                return
+        if len(parts) >= 3:
+            try:
+                bullets = int(parts[2])
+            except:
+                yield from message.channel.send('"{0}" no es una cantidad válida de balas de la pistola.'.format(parts[2]))
+                return
+        Command.russeRoulette(message.channel, size, bullets)
 
     elif command == '&alaputa':
         yield from message.channel.send(Command.alaputa())
