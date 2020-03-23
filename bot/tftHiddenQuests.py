@@ -314,7 +314,7 @@ def tft_3_3_team_class():
     return 'Acaba la partida con 3 unidades {0} y 3 unidades {1}'.format(CLASS_A['name'], CLASS_B['name'])
 
 def tft_2_out_of_4_items_same_character():
-    items = aux_tft_create_list(aux_tft_get_n_from_list(UPGRADED_ITEMS, 2))
+    items = aux_tft_get_n_from_list(UPGRADED_ITEMS, 2)
     return 'Acaba la partida con un personaje equipado con {0} y {1}'.format(items[0], items[1])
 
 def tft_2_characters_same_item():
