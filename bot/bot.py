@@ -2,6 +2,7 @@ import os
 import discord
 import asyncio
 import configparser
+import random
 
 from bot.commands import Command
 from bot.tftHiddenQuests import TFTHiddenQuestsCommands
@@ -179,6 +180,9 @@ Por ejemplo: `&factory create mi fabrica de tomates&tomate`
         response = TFTHiddenQuestsCommands.status(message.author)
         if response is not None:
             yield from message.channel.send('{0}'.format(response))
+
+    elif random.randint(0, 1000) == 1000:
+        yield from message.add_reaction('<:Gartu:689953022285185089>')
 
 # Set up the base bot
 class DiscordBot(object):
