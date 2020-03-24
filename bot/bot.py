@@ -6,6 +6,7 @@ import random
 
 from bot.commands import Command
 from bot.tftHiddenQuests import TFTHiddenQuestsCommands
+from bot.unicodeEmojis import emojis
 
 client = discord.Client()
 
@@ -181,8 +182,17 @@ Por ejemplo: `&factory create mi fabrica de tomates&tomate`
         if response is not None:
             yield from message.channel.send('{0}'.format(response))
 
-    elif random.randint(0, 1000) == 1000:
+    elif random.randint(0, 2000) == 1000:
         yield from message.add_reaction('<:Gartu:689953022285185089>')
+
+    elif random.randint(0, 1000) == 1000:
+        yield from message.add_reaction(random.choice(client.emojis))
+
+    elif random.randint(0, 1000) == 1000:
+        yield from message.add_reaction(random.choice(emojis))
+
+    elif random.randint(0, 2000) == 1000:
+        yield from message.add_reaction('✅')
 
 # Set up the base bot
 class DiscordBot(object):
