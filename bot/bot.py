@@ -58,6 +58,12 @@ def on_reaction_remove(reaction, user):
     if reaction.emoji == '🔫':
         Command.shootRusseRoulette(reaction.message.id, user)
 
+    # From here random reactions
+    if reaction.message.author == client.user:
+        return
+    if random.randint(0, 50) == 0:
+        yield from reaction.message.add_reaction(reaction.emoji)
+
 @client.event
 @asyncio.coroutine
 def on_reaction_add(reaction, user):
