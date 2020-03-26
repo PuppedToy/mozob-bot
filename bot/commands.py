@@ -11,7 +11,7 @@ from bot.russeRoulette import RusseRoulette
 connection = Connection()
 
 PRODUCTION_INTERVAL = 60*60 # 1 product each hour
-INVISIBLE_FRIEND_AUTODESTRUCTION_TIME = 60*60*4 # cancel invisible friend after 4 hours
+INVISIBLE_FRIEND_AUTODESTRUCTION_TIME = 60*60*24*7 # cancel invisible friend after a week
 RUSSE_ROULETTE_AUTODESTRUCTION_TIME = 60*60*4 # cancel russe roulettes after 4 hours
 # PRODUCTION_INTERVAL = 10 # 1 product each 10s
 
@@ -35,7 +35,7 @@ class Command:
     `&factory delete`: Si tienes una fábrica, LA DESTRUYES PARA SIEMPRE.
     `&factory list`: Muestra la lista de fábricas existentes.
     `&inventory`: Muestra tu inventario
-    `&invisible_friend`: Crea una sala de amigo invisible.
+    `&invisible_friend [(p)ublic|(s)ecret]`: Crea una sala de amigo invisible. Si se elige `secret`, los regalos no se publicarán en el canal.
     `&russe_roulette [capacidad_arma] [numero_balas]`: Crea una sala de ruleta rusa. Por defecto, se asume un arma con 6 huecos y 1 bala.
     `&tft random_classes`: Genera dos clases (clases/orígenes) aleatorios para jugar tu próximo TFT
     `&tft hidden_quest help`: Muestra la ayuda de la modalidad de **TFT Hidden Quest**
@@ -144,8 +144,8 @@ Lista de pasos para jugar este modo:
             russeRoulettes.remove(russeRoulette)
 
     @classmethod
-    def invisibleFriend(cls, message):
-        invisibleFriend = InvisibleFriend(message)
+    def invisibleFriend(cls, message, isSecretRoom):
+        invisibleFriend = InvisibleFriend(message, isSecretRoom)
         invisibleFriends.append(invisibleFriend)
         asyncio.ensure_future(Command.invisibleFriendAutodestruction(invisibleFriend))
 

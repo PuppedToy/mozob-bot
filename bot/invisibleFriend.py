@@ -11,7 +11,11 @@ class InvisibleFriendUser:
 
 class InvisibleFriend:
 
-	def __init__(self, message):
+	def __init__(self, message, isSecretRoom = False):
+		self.isSecretRoom = isSecretRoom
+		self.roomType = 'PÚBLICA'
+		if self.isSecretRoom:
+			self.roomType = 'SECRETA'
 		self.users = {}
 		self.message = None
 		self.started = False
@@ -55,8 +59,13 @@ class InvisibleFriend:
 	def givePresent(self, user, present):
 		if user.id in self.users and self.users[user.id].present is None:
 			self.users[user.id].present = present
-			if len(self.getGiftUsersList()) == len(self.getUsersList()):
+			users = self.getUsersList()
+			if len(self.getGiftUsersList()) == len(users):
 				self.revealed = True
+				for user in users:
+					target = user.target
+					asyncio.ensure_future(target.user.send('¡Has recibido un regalo de {0}! El contenido del regalo es el siguiente:'.format(user.user.name)))
+					asyncio.ensure_future(target.user.send(user.present))
 				asyncio.ensure_future(self.channel.send("¡Todos los usuarios del amigo invisible han recibido sus regalos!"))
 			self.refreshStatus()
 
@@ -70,7 +79,7 @@ class InvisibleFriend:
 
 	def buildStatus(self):
 		users = self.users.items()
-		message = "**Sala de amigo invisible Reacciona con 🎁 para unirte y ▶️ para empezar.**\n```\n{0} usuarios dentro de la sala:\n\n".format(len(users))
+		message = "**Sala de amigo invisible [{0}]. Reacciona con 🎁 para unirte y ▶️ para empezar.**\n```\n{1} usuarios dentro de la sala:\n\n".format(self.roomType, len(users))
 		if self.cancelled:
 			return message + "Amigo invisible cancelado.\n```"
 		for userId, user in users:
@@ -80,8 +89,11 @@ class InvisibleFriend:
 				message += "{0} está fabricando su regalo... ⛏\n".format(user.user.name)
 			elif self.revealed == False:
 				message += "¡{0} ha envuelto su regalo! 🎁\n".format(user.user.name)
-			else:
+			elif not self.isSecretRoom:
 				message += "{0} ha ha entregado su 🎁 a {1} --> {2}\n".format(user.user.name, user.target.user.name, user.present)
+			else:
+				message += "{0} ha ha entregado su 🎁 a {1} --> [Contenido privado]\n".format(user.user.name, user.target.user.name)
+
 		if len(users) <= 0:
 			message += "La sala está vacía"
 		message += "```"

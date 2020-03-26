@@ -116,8 +116,16 @@ Por ejemplo: `&factory create mi fabrica de tomates&tomate`
     elif command == '&inventory':
         yield from message.channel.send(Command.inventory(message.author.id))
 
-    elif command == '&invisible_friend':
-        Command.invisibleFriend(message)
+    elif command.startswith('&invisible_friend'):
+        parts = command.split(' ')
+        isSecretRoom = False
+        if len(parts) >= 2 and parts[1].startswith('s'):
+            isSecretRoom = True
+        elif len(parts) >= 2 and not parts[1].startswith('p'):
+            yield from message.channel.send('"{0}" no es un argumento válido para el tipo de sala. Escribe **_s_** para una sala secreta o **_p_** para una sala pública.'.format(parts[1]))
+            return
+
+        Command.invisibleFriend(message, isSecretRoom)
 
     elif command.startswith('&russe_roulette'):
         parts = command.split(' ')
