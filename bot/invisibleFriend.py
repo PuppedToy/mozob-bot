@@ -55,7 +55,7 @@ class InvisibleFriend:
 				currentUser.target = random.choice(eligibleTargets)
 				targets.remove(currentUser.target)
 				if self.isSecretTarget:
-					messages = "¡Te ha tocado regalar a alguien (secreto)! Por favor, escribe tu regalo de amigo invisible."
+					message = "¡Te ha tocado regalar a alguien (secreto)! Por favor, escribe tu regalo de amigo invisible."
 				else:
 					message = "¡Te ha tocado regalar a {0}! Por favor, escribe tu regalo de amigo invisible.".format(currentUser.target.user.name)
 				asyncio.ensure_future(currentUser.user.send(message))
