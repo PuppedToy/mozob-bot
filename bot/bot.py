@@ -17,6 +17,8 @@ def on_ready():
     print('-'*20)
 
 shortcuts = [
+    ['if', 'invisible_friend', False],
+    ['if', 'invisible_friend', True],
     ['tft hq', 'tft hidden_quest', True],
     ['tft hidden_quest h', 'tft hidden_quest help', False],
     ['tft hidden_quest cmd', 'tft hidden_quest commands', False],
