@@ -116,6 +116,13 @@ Por ejemplo: `&factory create mi fabrica de tomates&tomate`
     elif command == '&inventory':
         yield from message.channel.send(Command.inventory(message.author.id))
 
+    elif command.startswith('&invisible_friend h'):
+        responses = Command.invisibleFriendHelp()
+        yield from message.channel.send('<@{0}>, te he enviado un mensaje privado.'.format(message.author.id))
+        yield from message.author.send(responses[0])
+        yield from message.author.send(responses[1])
+        return
+
     elif command.startswith('&invisible_friend'):
         parts = command.split(' ')
         isSecretRoom = False

@@ -14,6 +14,7 @@ PRODUCTION_INTERVAL = 60*60 # 1 product each hour
 INVISIBLE_FRIEND_AUTODESTRUCTION_TIME = 60*60*24*7 # cancel invisible friend after a week
 RUSSE_ROULETTE_AUTODESTRUCTION_TIME = 60*60*4 # cancel russe roulettes after 4 hours
 # PRODUCTION_INTERVAL = 10 # 1 product each 10s
+#     `&invisible_friend [(p)ublic|(s)ecret]`: Crea una sala de amigo invisible. Si se elige `secret`, los regalos no se publicarán en el canal.
 
 factories = connection.getFactories()
 inventories = connection.getInventories()
@@ -35,7 +36,7 @@ class Command:
     `&factory delete`: Si tienes una fábrica, LA DESTRUYES PARA SIEMPRE.
     `&factory list`: Muestra la lista de fábricas existentes.
     `&inventory`: Muestra tu inventario
-    `&invisible_friend [(p)ublic|(s)ecret]`: Crea una sala de amigo invisible. Si se elige `secret`, los regalos no se publicarán en el canal.
+    `&invisible_friend`: Genera una sala de amigo invisible. Para saber más, puedes usar `&invisible_friend help`.
     `&russe_roulette [capacidad_arma] [numero_balas]`: Crea una sala de ruleta rusa. Por defecto, se asume un arma con 6 huecos y 1 bala.
     `&tft random_classes`: Genera dos clases (clases/orígenes) aleatorios para jugar tu próximo TFT
     `&tft hidden_quest help`: Muestra la ayuda de la modalidad de **TFT Hidden Quest**
@@ -128,6 +129,29 @@ Lista de pasos para jugar este modo:
     `&tft hidden_quest end <posición> <he_completado_mi_mision (y/n)>`: Cuando un jugador acaba su partida, deberá poner este comando identificando en que _posición_ ha quedado y si ha completado su misión (**_y_**) o no (**_n_**). Atajos: `&tft hq e`
     `&tft hidden_quest status`: Muestra el estado de la sala en la que estás. Atajos: `&tft hq s`
 '''
+
+    @classmethod
+    def invisibleFriendHelp(cls):
+        return ['''Las salas de amigo invisible permiten organizar un intercambio de mensajes entre un grupo de personas de forma que cada persona reciba otra a la que regalar. Puedes generar una sala sin opciones, lo cual hará totalmente pública toda la información (quién regala a quién y qué se regala). Para hacer privados esos datos, se dispone de las siguientes opciones.
+Opciones disponibles:
+    `secret_target` o `st`: El regalador no sabe a quién regala hasta que todos los regalos se han repartido. Si esta opción no se selecciona, el regalador conocerá su regalado desde el momento en que empieza el amigo invisible.
+    `secret_giver` o `sg`: Nadie sabe quién quien le ha regalado. Si esta opción no está activada, se publicará quién regala a quién excepto si se utiliza `private_giver`.
+    `private_giver` o `pg`: Cada persona sabe quién le ha regalado, pero no se publicará en el canal. Si no se selecciona esta opción, se publicará quién ha regalado a quién. Si se activa la opción `secret_giver` esta opción se ignora.
+    `private_present` o `pp`: El regalo solo lo conocen las personas involucradas. Si esta opción no se selecciona, los regalos se publicarán en el canal cuando todos hayan enviado su regalo.
+.
+.
+''',
+        '''Se pueden combinar las opciones entre ellas. Aquí se listan todas las posibles combinaciones:
+    `&invisible_friend st sg`: nadie sabrá a quién está regalando quién le regala. Pero el regalo será público y todos conocerán lo que ha recibido cada uno.
+    `&invisible_friend st pg`: nadie sabrá a quién está regalando y no sé publicará quién regala a quién, pero cada persona conocerá quién le ha regalado. Además, los regalos que ha recibido cada uno se harán públicos.
+    `&invisible_friend st pp`: nadié sabrá a quién está regalando y los regalos que se hagan no se publicarán. Sin embargo, una vez hechos los regalos, se publicará quién ha regalado a quién.
+    `&invisible_friend sg pg`: `sg` sobreescribe siempre a `pg`.
+    `&invisible_friend sg pp`: nadie sabe quién le ha regalado y los regalos no se publicarán, pero cada uno sabe a quién regala.
+    `&invisible_friend pg pp`: no se publica ni quién ha regalado a quién ni los regalos, pero cada uno sabe tanto a quién regala como quién le ha regalado.
+    `&invisible_friend st sg pg`: es equivalente a `&invisible_friend st sg`.
+    `&invisible_friend st sg pp`: nadie sabe a quién regala ni quién le ha regalado. Además los regalos no se publicarán.
+    `&invisible_friend st pg pp`: nadie sabe a quién regala. Además, no se publicarán ni los regalos ni quién regala a quién, pero cada persona sabe quién le ha regalado.
+''']
 
     @classmethod
     async def invisibleFriendAutodestruction(cls, invisibleFriend):
