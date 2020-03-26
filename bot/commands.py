@@ -168,8 +168,8 @@ Opciones disponibles:
             russeRoulettes.remove(russeRoulette)
 
     @classmethod
-    def invisibleFriend(cls, message, isSecretRoom):
-        invisibleFriend = InvisibleFriend(message, isSecretRoom)
+    def invisibleFriend(cls, message, isSecretTarget, isSecretGiver, isPrivateGiver, isPrivatePresent):
+        invisibleFriend = InvisibleFriend(message, isSecretTarget, isSecretGiver, isPrivateGiver, isPrivatePresent)
         invisibleFriends.append(invisibleFriend)
         asyncio.ensure_future(Command.invisibleFriendAutodestruction(invisibleFriend))
 
@@ -186,6 +186,12 @@ Opciones disponibles:
             if invisibleFriend.started and not invisibleFriend.revealed and userId in invisibleFriend.users:
                 return invisibleFriend
         return None
+
+    @classmethod
+    def sendSettingsInvisibleFriend(cls, messageId, user):
+        invisibleFriend = Command.searchInvisibleFriend(messageId)
+        if invisibleFriend:
+            invisibleFriend.sendSettings(user)
 
     @classmethod
     def joinInvisibleFriend(cls, messageId, user):

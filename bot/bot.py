@@ -73,6 +73,8 @@ def on_reaction_add(reaction, user):
         Command.joinInvisibleFriend(reaction.message.id, user)
     if reaction.emoji == '▶️':
         Command.startInvisibleFriend(reaction.message.id, user)
+    if reaction.emoji == '⚙️':
+        Command.sendSettingsInvisibleFriend(reaction.message.id, user)
     if reaction.emoji == '🔫':
         Command.shootRusseRoulette(reaction.message.id, user)
 
@@ -124,15 +126,23 @@ Por ejemplo: `&factory create mi fabrica de tomates&tomate`
         return
 
     elif command.startswith('&invisible_friend'):
-        parts = command.split(' ')
-        isSecretRoom = False
-        if len(parts) >= 2 and parts[1].startswith('s'):
-            isSecretRoom = True
-        elif len(parts) >= 2 and not parts[1].startswith('p'):
-            yield from message.channel.send('"{0}" no es un argumento válido para el tipo de sala. Escribe **_s_** para una sala secreta o **_p_** para una sala pública.'.format(parts[1]))
-            return
+        isSecretTarget = False
+        isSecretGiver = False
+        isPrivateGiver = False
+        isPrivatePresent = False
 
-        Command.invisibleFriend(message, isSecretRoom)
+        parts = command.split(' ')
+        for part in parts:
+            if part == 'secret_target' or part == 'st':
+                isSecretTarget = True
+            if part == 'secret_giver' or part == 'sg':
+                isSecretGiver = True
+            if part == 'private_giver' or part == 'pg':
+                isPrivateGiver = True
+            if part == 'private_present' or part == 'pp':
+                isPrivatePresent = True
+
+        Command.invisibleFriend(message, isSecretTarget, isSecretGiver, isPrivateGiver, isPrivatePresent)
 
     elif command.startswith('&russe_roulette'):
         parts = command.split(' ')
