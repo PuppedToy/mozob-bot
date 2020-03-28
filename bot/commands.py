@@ -36,6 +36,7 @@ class Command:
     `&factory delete`: Si tienes una fábrica, LA DESTRUYES PARA SIEMPRE.
     `&factory list`: Muestra la lista de fábricas existentes.
     `&inventory`: Muestra tu inventario
+    `&roll <Numero de dados>d<Caras>`: Lanza "x" dados de "y" caras y muestra los resultados.
     `&invisible_friend`: Genera una sala de amigo invisible. Para saber más, puedes usar `&invisible_friend help`.
     `&russe_roulette [capacidad_arma] [numero_balas]`: Crea una sala de ruleta rusa. Por defecto, se asume un arma con 6 huecos y 1 bala.
     `&tft random_classes`: Genera dos clases (clases/orígenes) aleatorios para jugar tu próximo TFT
@@ -91,6 +92,16 @@ class Command:
         else:
             frase = "Coincido, a la puta con todo"
         return frase
+
+    #ADD BY FranciscoJavierValero 28/3/20 2:21
+    @classmethod
+    def roll(cls, dice: str):
+        parts = dice.lower().split("d")
+        d_number = parts[0]
+        sides = part[1]
+        results = [random.randint(1,sides) for i in range(d_number)]
+        return str(results)
+    #END ADD
 
     @classmethod
     def tftRandomClasses(cls, sender):
