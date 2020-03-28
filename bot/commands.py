@@ -92,6 +92,16 @@ class Command:
             frase = "Coincido, a la puta con todo"
         return frase
 
+    #ADD BY FranciscoJavierValero 28/3/20 2:21
+    @classmethod
+    def roll(cls, dice: str):
+        parts = dice.lower().split("d")
+        d_number = parts[0]
+        sides = part[1]
+        results = [random.randint(1,sides) for i in range(d_number)]
+        return str(results)
+    #END ADD
+
     @classmethod
     def tftRandomClasses(cls, sender):
         return "<@{0}>, en la próxima partida de TFT vas a ir a {1} y {2}. Buena suerte!".format(sender, random.choice(TFT_CLASSES), random.choice(TFT_CLASSES))

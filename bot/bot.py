@@ -167,6 +167,12 @@ Por ejemplo: `&factory create mi fabrica de tomates&tomate`
     elif command == '&alaputa':
         yield from message.channel.send(Command.alaputa())
 
+    #ADD BY FranciscoJavierValero 28/3/20 2:21
+    elif command.startswith('roll'):
+        parts = command.split(' ')
+        yield from message.channel.send(Command.roll(parts[1]))
+    #END ADD
+    
     elif command == '&tft random_classes':
         yield from message.channel.send(Command.tftRandomClasses(message.author.id))
 
