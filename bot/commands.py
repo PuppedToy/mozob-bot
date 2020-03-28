@@ -99,7 +99,7 @@ class Command:
         parts = dice.lower().split("d")
         d_number = parts[0]
         sides = part[1]
-        results = [random.randint(1,sides) for i in range(d_number)]
+        results = [random.randint(1,int(sides)) for i in range(int(d_number))]
         return str(results)
     #END ADD
 
