@@ -3,12 +3,24 @@ import discord
 import asyncio
 import configparser
 import random
+import re
 
 from bot.commands import Command
 from bot.tftHiddenQuests import TFTHiddenQuestsCommands
 from bot.unicodeEmojis import emojis
 
 client = discord.Client()
+
+su = '293134026611490818'
+
+def isSetSU():
+    global su
+    return not isinstance(su, str)
+
+def setSU(user):
+    global su
+    if not isSetSU() and str(user.id) == su:
+        su = user
 
 @client.event
 @asyncio.coroutine
@@ -79,6 +91,10 @@ def on_reaction_add(reaction, user):
         Command.sendSettingsInvisibleFriend(reaction.message.id, user)
     if reaction.emoji == '🔫':
         Command.shootRusseRoulette(reaction.message.id, user)
+    if isSetSU() and re.match('^<:TrapClaw:', str(reaction.emoji)) is not None:
+        yield from su.send('TrapClaw!')
+    if isSetSU() and re.match('^<:kakera', str(reaction.emoji)) is not None:
+        yield from su.send('kakera!')
 
     # From here random reactions
     if reaction.message.author == client.user:
@@ -90,6 +106,7 @@ def on_reaction_add(reaction, user):
 @asyncio.coroutine
 def on_message(message):
     command = applyShortcuts(message.content.lower())
+    setSU(message.author)
     if message.author == client.user:
         return
     elif isinstance(message.channel, discord.DMChannel):
