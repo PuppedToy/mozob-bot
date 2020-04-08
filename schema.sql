@@ -30,7 +30,7 @@ CREATE TABLE `Factory` (
   PRIMARY KEY (`IdFactory`),
   KEY `fk_Product_Factory_idx` (`Product`),
   CONSTRAINT `fk_Product_Factory` FOREIGN KEY (`Product`) REFERENCES `product` (`idproduct`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -47,6 +47,20 @@ CREATE TABLE `Inventory` (
   PRIMARY KEY (`Owner`,`Product`),
   KEY `fk_Product_idx` (`Product`),
   CONSTRAINT `fk_Product` FOREIGN KEY (`Product`) REFERENCES `product` (`idproduct`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Kakera`
+--
+
+DROP TABLE IF EXISTS `Kakera`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+ SET character_set_client = utf8mb4 ;
+CREATE TABLE `Kakera` (
+  `User` bigint(20) NOT NULL,
+  `Channel` bigint(20) NOT NULL,
+  PRIMARY KEY (`User`,`Channel`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -131,7 +145,7 @@ CREATE TABLE `Product` (
   PRIMARY KEY (`IdProduct`,`Name`),
   UNIQUE KEY `Name_UNIQUE` (`Name`),
   UNIQUE KEY `IdProduct_UNIQUE` (`IdProduct`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -143,4 +157,4 @@ CREATE TABLE `Product` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-03-12 14:11:51
+-- Dump completed on 2020-04-08 15:05:09

@@ -11,17 +11,6 @@ from bot.unicodeEmojis import emojis
 
 client = discord.Client()
 
-su = '293134026611490818'
-
-def isSetSU():
-    global su
-    return not isinstance(su, str)
-
-def setSU(user):
-    global su
-    if not isSetSU() and str(user.id) == su:
-        su = user
-
 @client.event
 @asyncio.coroutine
 def on_ready():
@@ -31,6 +20,9 @@ def on_ready():
 shortcuts = [
     ['if', 'invisible_friend', False],
     ['if', 'invisible_friend', True],
+    ['k', 'kakera', True],
+    ['kakera s', 'kakera subscribe', False],
+    ['kakera u', 'kakera unsubscribe', False],
     ['tft hq', 'tft hidden_quest', True],
     ['tft hidden_quest h', 'tft hidden_quest help', False],
     ['tft hidden_quest cmd', 'tft hidden_quest commands', False],
@@ -91,10 +83,11 @@ def on_reaction_add(reaction, user):
         Command.sendSettingsInvisibleFriend(reaction.message.id, user)
     if reaction.emoji == '🔫':
         Command.shootRusseRoulette(reaction.message.id, user)
-    if isSetSU() and re.match('^<:TrapClaw:', str(reaction.emoji)) is not None:
-        yield from su.send('TrapClaw!')
-    if isSetSU() and re.match('^<:kakera', str(reaction.emoji)) is not None:
-        yield from su.send('kakera!')
+
+    if user.bot:
+        kakeraType = re.findall('^<:(kakera.?):', str(reaction.emoji))
+        if len(kakeraType) > 0:
+            Command.kakeraBroadcast(reaction.message.channel, kakeraType[0])
 
     # From here random reactions
     if reaction.message.author == client.user:
@@ -106,7 +99,6 @@ def on_reaction_add(reaction, user):
 @asyncio.coroutine
 def on_message(message):
     command = applyShortcuts(message.content.lower())
-    setSU(message.author)
     if message.author == client.user:
         return
     elif isinstance(message.channel, discord.DMChannel):
@@ -189,6 +181,12 @@ Por ejemplo: `&factory create mi fabrica de tomates&tomate`
         parts = command.split(' ')
         yield from message.channel.send(Command.roll(parts[1]))
     #END ADD
+
+    elif command == '&kakera subscribe':
+        Command.kakeraSubscribe(message)
+
+    elif command == '&kakera unsubscribe':
+        Command.kakeraUnsubscribe(message)
 
     elif command == '&tft random_classes':
         yield from message.channel.send(Command.tftRandomClasses(message.author.id))

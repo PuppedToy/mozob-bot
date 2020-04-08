@@ -2,6 +2,7 @@ import requests
 import threading
 import random
 import asyncio
+import discord
 
 TFT_CLASSES = ['Inferno', 'Light', 'Poison', 'Crystal', 'Desert', 'Ocean', 'Shadow', 'Electric', 'Lunar', 'Mountain', 'Woodland', 'Cloud', 'Glacial', 'Steel', 'Alchemist', 'Avatar', 'Ranger', 'Mage', 'Mystic', 'Soulbound', 'Summoner', 'Assasain', 'Berserker', 'Predator', 'Warden', 'Blademaster', 'Druid']
 
@@ -16,10 +17,21 @@ RUSSE_ROULETTE_AUTODESTRUCTION_TIME = 60*60*4 # cancel russe roulettes after 4 h
 # PRODUCTION_INTERVAL = 10 # 1 product each 10s
 #     `&invisible_friend [(p)ublic|(s)ecret]`: Crea una sala de amigo invisible. Si se elige `secret`, los regalos no se publicarán en el canal.
 
+kakeraTypes = {
+    'kakera': '<:kakera:694882181927141446>',
+    'kakeraP': '<:kakeraP:697381527251714109>',
+    'kakeraG': '<:kakeraG:697381527499046992>',
+    'kakeraO': '<:kakeraO:697381527310565447>',
+    'kakeraR': '<:kakeraR:697381527666950174>',
+    'kakeraT': '<:kakeraT:697381527734190161>',
+    'kakeraY': '<:kakeraY:697381527419486282>'
+}
+
 factories = connection.getFactories()
 inventories = connection.getInventories()
 invisibleFriends = []
 russeRoulettes = []
+kakeraSubscribers = {}
 
 class Command:
 
@@ -36,6 +48,8 @@ class Command:
     `&factory delete`: Si tienes una fábrica, LA DESTRUYES PARA SIEMPRE.
     `&factory list`: Muestra la lista de fábricas existentes.
     `&inventory`: Muestra tu inventario
+    `&kakera subscribe`: Te suscribes a las notificaciones de kakera.
+    `&kakera unsubscribe`: Cancelas la suscripción de las notificaciones de kakera.
     `&roll <Numero de dados>d<Caras>`: Lanza "x" dados de "y" caras y muestra los resultados.
     `&invisible_friend`: Genera una sala de amigo invisible. Para saber más, puedes usar `&invisible_friend help`.
     `&russe_roulette [capacidad_arma] [numero_balas]`: Crea una sala de ruleta rusa. Por defecto, se asume un arma con 6 huecos y 1 bala.
@@ -250,6 +264,49 @@ Opciones disponibles:
             russeRoulette.shoot(user)
             if russeRoulette.bullets == 0:
                 russeRoulettes.remove(russeRoulette)
+
+    @classmethod
+    def kakeraSubscribe(cls, message):
+        if not message.channel.id in kakeraSubscribers:
+            kakeraSubscribers[message.channel.id] = []
+        if message.author.id in kakeraSubscribers[message.channel.id]:
+            asyncio.ensure_future(message.add_reaction("🇫"))
+        else:
+            kakeraSubscribers[message.channel.id].append(message.author.id)
+            connection.kakeraSubscribe(message.author.id, message.channel.id)
+            asyncio.ensure_future(message.add_reaction("✅"))
+
+    @classmethod
+    def kakeraUnsubscribe(cls, message):
+        if not message.channel.id in kakeraSubscribers:
+            kakeraSubscribers[message.channel.id] = []
+        if message.author.id not in kakeraSubscribers[message.channel.id]:
+            asyncio.ensure_future(message.add_reaction("🇫"))
+        else:
+            kakeraSubscribers[message.channel.id].remove(message.author.id)
+            connection.kakeraUnsubscribe(message.author.id, message.channel.id)
+            asyncio.ensure_future(message.add_reaction("✅"))
+
+    @classmethod
+    def kakeraBroadcast(cls, channel, kakeraType = 'kakera'):
+        kakera = kakeraTypes['kakera']
+        if kakeraType in kakeraTypes:
+            kakera = kakeraTypes[kakeraType]
+        kakeraMessage = '{0} Kakera found in {1} ({2})'.format(kakera, channel.name, channel.guild.name)
+        for user in kakeraSubscribers[channel.id]:
+            sendableUser = discord.utils.get(channel.members, id=user)
+            if sendableUser:
+                asyncio.ensure_future(sendableUser.send(kakeraMessage))
+
+def setup():
+    kakeras = connection.kakeraList()
+    for (User, Channel) in kakeras:
+        if not Channel in kakeraSubscribers:
+            kakeraSubscribers[Channel] = []
+        if not User in kakeraSubscribers[Channel]:
+            kakeraSubscribers[Channel].append(User)
+
+setup()
 
 def produce():
     for owner, factory in factories.items():

@@ -113,3 +113,17 @@ class Connection:
     	sql = "UPDATE Inventory SET Amount = %s WHERE Owner = %s AND Product = %s"
     	self.query(sql, tuple([amount, owner, product]))
 
+    def kakeraList(self):
+        sql = "SELECT User, Channel FROM Kakera"
+        return self.query(sql)
+
+    def kakeraSubscribe(self, userId, channelId):
+        sql = "INSERT IGNORE INTO Kakera (User, Channel) VALUES (%(userId)s, %(channelId)s)"
+        result = self.query(sql, {"userId": userId, "channelId": channelId})
+        return len(result) > 0
+
+    def kakeraUnsubscribe(self, userId, channelId):
+        sql = "DELETE FROM Kakera WHERE User = %(userId)s AND Channel = %(channelId)s"
+        result = self.query(sql, {"userId": userId, "channelId": channelId})
+        return len(result) > 0
+
