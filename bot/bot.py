@@ -56,6 +56,11 @@ def applyShortcuts(command):
 
 @client.event
 @asyncio.coroutine
+def on_voice_state_update(member, before, after):
+    Command.checkExile(member, after.channel)
+
+@client.event
+@asyncio.coroutine
 def on_reaction_remove(reaction, user):
     if user == client.user:
         return
@@ -128,6 +133,15 @@ Por ejemplo: `&factory create mi fabrica de tomates&tomate`
 
     elif command == '&inventory':
         yield from message.channel.send(Command.inventory(message.author.id))
+
+    elif command.startswith('&exile channel'):
+        channelName = command.replace('&exile channel ', '')
+        Command.setExileChannel(message, channelName)
+
+    elif command.startswith('&exile'):
+        parts = command.split(' ')
+        targetId = int(re.sub('[<@!>]', '', parts[1]))
+        Command.exile(message, targetId)
 
     elif command.startswith('&invisible_friend h'):
         responses = Command.invisibleFriendHelp()

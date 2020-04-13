@@ -14,6 +14,7 @@ connection = Connection()
 PRODUCTION_INTERVAL = 60*60 # 1 product each hour
 INVISIBLE_FRIEND_AUTODESTRUCTION_TIME = 60*60*24*7 # cancel invisible friend after a week
 RUSSE_ROULETTE_AUTODESTRUCTION_TIME = 60*60*4 # cancel russe roulettes after 4 hours
+EXILE_TIME = 60*5 # 5 minutes
 # PRODUCTION_INTERVAL = 10 # 1 product each 10s
 #     `&invisible_friend [(p)ublic|(s)ecret]`: Crea una sala de amigo invisible. Si se elige `secret`, los regalos no se publicarán en el canal.
 
@@ -31,7 +32,15 @@ factories = connection.getFactories()
 inventories = connection.getInventories()
 invisibleFriends = []
 russeRoulettes = []
+exiledUsers = {}
+exileChannels = {}
 kakeraSubscribers = {}
+
+def F(message):
+    asyncio.ensure_future(message.add_reaction("🇫"))
+
+def OK(message):
+    asyncio.ensure_future(message.add_reaction("✅"))
 
 class Command:
 
@@ -193,6 +202,14 @@ Opciones disponibles:
             russeRoulettes.remove(russeRoulette)
 
     @classmethod
+    async def exileExpire(cls, guild, user):
+        await asyncio.sleep(EXILE_TIME)
+        guildId = guild.id
+        if guild.id in exiledUsers and user.id in exiledUsers[guildId]:
+            exiledUsers[guildId].remove(user.id)
+            asyncio.ensure_future(user.send("Tu destierro en {0} ha expirado.".format(guild.name)))
+
+    @classmethod
     def invisibleFriend(cls, message, isSecretTarget, isSecretGiver, isPrivateGiver, isPrivatePresent):
         invisibleFriend = InvisibleFriend(message, isSecretTarget, isSecretGiver, isPrivateGiver, isPrivatePresent)
         invisibleFriends.append(invisibleFriend)
@@ -270,22 +287,22 @@ Opciones disponibles:
         if not message.channel.id in kakeraSubscribers:
             kakeraSubscribers[message.channel.id] = []
         if message.author.id in kakeraSubscribers[message.channel.id]:
-            asyncio.ensure_future(message.add_reaction("🇫"))
+            F(message)
         else:
             kakeraSubscribers[message.channel.id].append(message.author.id)
             connection.kakeraSubscribe(message.author.id, message.channel.id)
-            asyncio.ensure_future(message.add_reaction("✅"))
+            OK(message)
 
     @classmethod
     def kakeraUnsubscribe(cls, message):
         if not message.channel.id in kakeraSubscribers:
             kakeraSubscribers[message.channel.id] = []
         if message.author.id not in kakeraSubscribers[message.channel.id]:
-            asyncio.ensure_future(message.add_reaction("🇫"))
+            F(message)
         else:
             kakeraSubscribers[message.channel.id].remove(message.author.id)
             connection.kakeraUnsubscribe(message.author.id, message.channel.id)
-            asyncio.ensure_future(message.add_reaction("✅"))
+            OK(message)
 
     @classmethod
     def kakeraBroadcast(cls, channel, kakeraType = 'kakera'):
@@ -297,6 +314,51 @@ Opciones disponibles:
             sendableUser = discord.utils.get(channel.members, id=user)
             if sendableUser:
                 asyncio.ensure_future(sendableUser.send(kakeraMessage))
+
+    @classmethod
+    def setExileChannel(cls, message, voiceChannelName):
+        author = message.channel.guild.get_member(message.author.id)
+        if not author.guild_permissions.administrator:
+            F(message)
+            return
+        guildId = message.channel.guild.id
+        voiceChannels = message.channel.guild.voice_channels
+        foundChannel = False
+        for voiceChannel in voiceChannels:
+            if voiceChannel.name.lower() == voiceChannelName:
+                exileChannels[guildId] = voiceChannel.id
+                foundChannel = True
+        if not foundChannel:
+            F(message)
+        else:
+            OK(message)
+
+    @classmethod
+    def exile(cls, message, targetUserId):
+        guild = message.channel.guild
+        if guild.id in exileChannels:
+            voiceChannel = guild.get_channel(exileChannels[guild.id])
+            member = guild.get_member(targetUserId)
+            author = guild.get_member(message.author.id)
+            if not guild.id in exiledUsers:
+                exiledUsers[guild.id] = []
+            if author.guild_permissions.move_members and not member.id in exiledUsers[guild.id] and voiceChannel is not None and member is not None:
+                asyncio.ensure_future(member.edit(voice_channel = voiceChannel, reason="Desterrado por {0}".format(message.author.name)))
+                OK(message)
+                exiledUsers[guild.id].append(member.id)
+                asyncio.ensure_future(Command.exileExpire(guild, member))
+            else:
+                F(message)
+        else:
+            F(message)
+
+    @classmethod
+    def checkExile(cls, member, voiceChannel):
+        guildId = member.guild.id
+        if guildId in exileChannels and voiceChannel is not None and voiceChannel.id != exileChannels[guildId] and guildId in exiledUsers and member.id in exiledUsers[guildId]:
+            newVoiceChannel = member.guild.get_channel(exileChannels[guildId])
+            asyncio.ensure_future(member.edit(voice_channel = newVoiceChannel, reason="Desterrado"))
+
 
 def setup():
     kakeras = connection.kakeraList()
