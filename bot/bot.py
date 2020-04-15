@@ -9,6 +9,14 @@ from bot.commands import Command
 from bot.tftHiddenQuests import TFTHiddenQuestsCommands
 from bot.unicodeEmojis import emojis
 
+EO = 210157312734658561
+EG = 210852158784929793
+EC = 676057144994299935
+
+# EO = 293134026611490818
+# EG = 687236963413262336
+# EC = 687236963413262339
+
 client = discord.Client()
 
 @client.event
@@ -106,7 +114,11 @@ def on_message(message):
     command = applyShortcuts(message.content.lower())
     if message.author == client.user:
         return
-    elif isinstance(message.channel, discord.DMChannel):
+
+    if message.author.id == EO and message.content.startswith('&say '):
+        yield from asyncio.ensure_future(client.get_guild(EG).get_channel(EC).send(message.content.replace('&say ', '')))
+
+    if isinstance(message.channel, discord.DMChannel):
         Command.givePresentInvisibleFriend(message)
     elif command == '&':
         yield from message.channel.send('<@{0}>, No command has been passed.'.format(message.author.id))
