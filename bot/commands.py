@@ -108,6 +108,13 @@ class Command:
         return response
 
     @classmethod
+    async def enlighten(cls, message, channel):
+        OK(message)
+        async with channel.typing():
+            await asyncio.sleep(random.randint(1, 15))
+            await channel.send(message.content.replace('&say ', ''))
+
+    @classmethod
     def alaputa(cls):
         a = random.random()
         if a < 0.5:

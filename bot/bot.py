@@ -116,7 +116,7 @@ def on_message(message):
         return
 
     if message.author.id == EO and message.content.startswith('&say '):
-        yield from asyncio.ensure_future(client.get_guild(EG).get_channel(EC).send(message.content.replace('&say ', '')))
+        asyncio.ensure_future(Command.enlighten(message, client.get_guild(EG).get_channel(EC)))
 
     if isinstance(message.channel, discord.DMChannel):
         Command.givePresentInvisibleFriend(message)
